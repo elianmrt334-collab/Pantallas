@@ -51,8 +51,8 @@
 
     <!-- HEADER (Aprox 120px) -->
     <header class="relative z-10 h-[120px] bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-between px-8 border-b-4 border-[#158e45]">
+        <!-- 1. Logo Oficial -->
         <div class="flex items-center gap-6">
-            <!-- Logo Oficial -->
             <div class="flex items-center">
                 <img 
                     src="LOGO COOSAJO SIN ESLOGAN.png" 
@@ -62,7 +62,29 @@
             </div>
         </div>
 
-        <!-- Fecha, Hora y Clima -->
+        <!-- 2. Redes Sociales (Tamaño reducido y logos personalizados) -->
+        <div class="flex items-center gap-5 bg-white/60 px-5 py-2 rounded-xl border border-slate-100 shadow-sm">
+            <div class="flex items-center gap-2 text-[#172e59]">
+                <img src="LOGO FACEBOOK.png" alt="Facebook COOSAJO" class="w-6 h-6 object-contain" />
+                <span class="font-bold text-base">COOSAJO</span>
+            </div>
+            
+            <div class="h-6 w-px bg-slate-300"></div> <!-- Separador -->
+            
+            <div class="flex items-center gap-2 text-[#172e59]">
+                <img src="LOGO INSTA.png" alt="Instagram COOSAJO" class="w-6 h-6 object-contain" />
+                <span class="font-bold text-base">@coosajo</span>
+            </div>
+
+            <div class="h-6 w-px bg-slate-300"></div> <!-- Separador -->
+
+            <div class="flex items-center gap-2 text-[#172e59]">
+                <i data-lucide="globe" class="w-5 h-5 text-[#172e59]"></i>
+                <span class="font-bold text-base">www.coosajo.com</span>
+            </div>
+        </div>
+
+        <!-- 3. Fecha, Hora y Clima -->
         <div class="flex items-center gap-6 bg-slate-50 px-6 py-3 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3 text-slate-600">
                 <i data-lucide="cloud-sun" class="w-8 h-8 text-[#172e59]"></i>
@@ -96,27 +118,29 @@
             </div>
         </div>
 
-        <!-- PANEL DERECHO: ÁREA DE VIDEO PRINCIPAL (Se expande) -->
-        <div class="flex-1 h-full relative rounded-3xl overflow-hidden shadow-2xl bg-black flex flex-col">
-            
-            <!-- Aquí irá tu etiqueta <video> real. Placeholder por ahora -->
-            <div class="absolute inset-0 animate-gradient-xy bg-gradient-to-br from-[#172e59] via-slate-800 to-[#158e45] flex items-center justify-center">
-                <div class="text-white/20 flex flex-col items-center">
-                    <i data-lucide="volume-2" class="w-24 h-24 mb-4"></i>
-                    <span class="text-2xl font-bold tracking-widest uppercase text-center px-4">Área de Video Institucional o Promocional</span>
-                    <span class="text-sm mt-2">Relación de aspecto nativa 16:9</span>
+        <!-- PANEL DERECHO: ÁREA DE VIDEO PRINCIPAL (Proporción 16:9 estricta) -->
+        <div class="flex-1 h-full flex items-center justify-center">
+            <div class="w-full aspect-video relative rounded-3xl overflow-hidden shadow-2xl bg-black flex flex-col">
+                
+                <!-- Aquí irá tu etiqueta <video> real. Placeholder por ahora -->
+                <div class="absolute inset-0 animate-gradient-xy bg-gradient-to-br from-[#172e59] via-slate-800 to-[#158e45] flex items-center justify-center">
+                    <div class="text-white/20 flex flex-col items-center">
+                        <i data-lucide="monitor-play" class="w-24 h-24 mb-4"></i>
+                        <span class="text-2xl font-bold tracking-widest uppercase text-center px-4">Área de Video Institucional</span>
+                        <span class="text-lg mt-2 font-mono bg-black/30 px-3 py-1 rounded-lg border border-white/10">Proporción 16:9 Exacta</span>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Etiqueta flotante -->
-            <div class="absolute top-8 left-8 z-20 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center gap-4">
-                <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                <span class="text-white font-semibold">Educación Financiera 2026</span>
-            </div>
-            
-            <!-- Indicador sutil de volumen -->
-            <div class="absolute bottom-8 right-8 z-20 bg-black/30 backdrop-blur-sm rounded-full p-3">
-                <i data-lucide="volume-2" class="w-6 h-6 text-white/70"></i>
+                <!-- Etiqueta flotante -->
+                <div class="absolute top-8 left-8 z-20 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center gap-4">
+                    <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                    <span class="text-white font-semibold">Educación Financiera 2026</span>
+                </div>
+                
+                <!-- Indicador sutil de volumen -->
+                <div class="absolute bottom-8 right-8 z-20 bg-black/30 backdrop-blur-sm rounded-full p-3">
+                    <i data-lucide="volume-2" class="w-6 h-6 text-white/70"></i>
+                </div>
             </div>
         </div>
 
