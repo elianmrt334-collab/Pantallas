@@ -1,200 +1,220 @@
-import React, { useState, useEffect } from 'react';
-import { Clock, Calendar, CloudSun, Volume2, Maximize, QrCode, ArrowRight, Info, ChevronRight } from 'lucide-react';
-
-const App = () => {
-  // Estados para simular interactividad y datos en vivo
-  const [time, setTime] = useState(new Date());
-  const [currentBanner, setCurrentBanner] = useState(0);
-
-  // Lista de banners (ahora solo necesitan la imagen, ya que traen el diseño integrado)
-  const banners = [
-    {
-      id: 1,
-      title: "Banner 1",
-      img: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=431&h=767&q=80"
-    },
-    {
-      id: 2,
-      title: "Banner 2",
-      img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&w=431&h=767&q=80"
-    },
-    {
-      id: 3,
-      title: "Banner 3",
-      img: "https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&w=431&h=767&q=80"
-    }
-  ];
-
-  // Efecto del reloj
-  useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  // Efecto del carrusel de banners (cambia cada 8 segundos)
-  useEffect(() => {
-    const bannerTimer = setInterval(() => {
-      setCurrentBanner((prev) => (prev + 1) % banners.length);
-    }, 8000);
-    return () => clearInterval(bannerTimer);
-  }, [banners.length]);
-
-  const formatTime = (date) => {
-    return date.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit', hour12: true });
-  };
-
-  const formatDate = (date) => {
-    return date.toLocaleDateString('es-GT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  };
-
-  return (
-    <div className="relative w-full h-screen bg-slate-100 overflow-hidden font-sans text-slate-800 flex flex-col">
-      {/* Estilos Globales para Animaciones */}
-      <style>{`
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pantalla Agencia COOSAJO</title>
+    
+    <!-- Librería de estilos Tailwind CSS por CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Librería de iconos Lucide por CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* Estilos Globales para Animaciones */
         @keyframes scroll-left {
-          0% { transform: translateX(100vw); }
-          100% { transform: translateX(-100%); }
+            0% { transform: translateX(100vw); }
+            100% { transform: translateX(-100%); }
         }
         .animate-marquee {
-          animation: scroll-left 30s linear infinite;
+            animation: scroll-left 30s linear infinite;
         }
         @keyframes gradient-xy {
-          0%, 100% { background-size: 400% 400%; background-position: 0% 0%; }
-          50% { background-size: 400% 400%; background-position: 100% 100%; }
+            0%, 100% { background-size: 400% 400%; background-position: 0% 0%; }
+            50% { background-size: 400% 400%; background-position: 100% 100%; }
         }
         .animate-gradient-xy {
-          animation: gradient-xy 15s ease infinite;
+            animation: gradient-xy 15s ease infinite;
         }
         @keyframes progress {
-          0% { width: 0%; }
-          100% { width: 100%; }
+            0% { width: 0%; }
+            100% { width: 100%; }
         }
         .animate-progress {
-          animation: progress 8s linear infinite;
+            animation: progress 8s linear infinite;
         }
-      `}</style>
-
-      {/* Fondo de Imagen Estática */}
-      <div 
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-60"
-        style={{ backgroundImage: "url('abstract-white-background-with-elegant-curving-lin-2026-01-07-23-20-12-utc.jpg')" }}
-      ></div>
-
-      {/* HEADER (Aprox 120px) */}
-      <header className="relative z-10 h-[120px] bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-between px-8 border-b-4 border-[#158e45]">
-        <div className="flex items-center gap-6">
-          {/* Logo Oficial */}
-          <div className="flex items-center">
-            <img 
-              src="LOGO COOSAJO SIN ESLOGAN.png" 
-              alt="Logo COOSAJO" 
-              className="h-20 w-auto object-contain drop-shadow-sm" 
-            />
-          </div>
-        </div>
-
-        {/* Fecha, Hora y Clima */}
-        <div className="flex items-center gap-6 bg-slate-50 px-6 py-3 rounded-2xl border border-slate-200 shadow-sm">
-          <div className="flex items-center gap-3 text-slate-600">
-            <CloudSun className="w-8 h-8 text-[#172e59]" />
-            <div className="flex flex-col">
-              <span className="font-bold text-lg leading-none">24°C</span>
-              <span className="text-xs">Esquipulas</span>
-            </div>
-          </div>
-          <div className="h-10 w-px bg-slate-300"></div>
-          <div className="flex items-center gap-3">
-            <div className="flex flex-col items-end">
-              <span className="font-bold text-2xl text-[#172e59] leading-none">{formatTime(time)}</span>
-              <span className="text-sm text-slate-500 capitalize">{formatDate(time)}</span>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* CONTENIDO PRINCIPAL (Videos + Banners) */}
-      <main className="relative z-10 flex-1 flex gap-6 p-6 h-[calc(100vh-190px)]">
         
-        {/* PANEL IZQUIERDO: BANNERS VERTICALES (Ancho Fijo ~431px) */}
-        <div className="w-[431px] h-full relative rounded-3xl overflow-hidden shadow-2xl bg-slate-800 flex-shrink-0 group">
-          {banners.map((banner, index) => (
-            <div 
-              key={banner.id}
-              className={`absolute inset-0 transition-opacity duration-1000 ${index === currentBanner ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
-            >
-              {/* Imagen de fondo (Diseño final con texto ya incluido) */}
-              <img src={banner.img} alt={banner.title} className="w-full h-full object-cover" />
+        /* Ocultar barras de desplazamiento para pantallas de TV */
+        body {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="relative w-full h-screen bg-slate-100 overflow-hidden font-sans text-slate-800 flex flex-col m-0 p-0">
+    
+    <!-- Fondo de Imagen Estática -->
+    <div 
+        class="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-60"
+        style="background-image: url('abstract-white-background-with-elegant-curving-lin-2026-01-07-23-20-12-utc.jpg')"
+    ></div>
+
+    <!-- HEADER (Aprox 120px) -->
+    <header class="relative z-10 h-[120px] bg-white/90 backdrop-blur-sm shadow-md flex items-center justify-between px-8 border-b-4 border-[#158e45]">
+        <div class="flex items-center gap-6">
+            <!-- Logo Oficial -->
+            <div class="flex items-center">
+                <img 
+                    src="LOGO COOSAJO SIN ESLOGAN.png" 
+                    alt="Logo COOSAJO" 
+                    class="h-20 w-auto object-contain drop-shadow-sm" 
+                />
             </div>
-          ))}
-
-          {/* Indicadores de progreso del carrusel */}
-          <div className="absolute top-4 left-0 right-0 flex justify-center gap-2 z-20 px-4">
-            {banners.map((_, idx) => (
-              <div key={idx} className="h-1.5 flex-1 bg-white/30 rounded-full overflow-hidden">
-                {idx === currentBanner && (
-                  <div className="h-full bg-[#158e45] w-full animate-progress rounded-full"></div>
-                )}
-                {idx < currentBanner && (
-                   <div className="h-full bg-[#158e45] w-full rounded-full"></div>
-                )}
-              </div>
-            ))}
-          </div>
         </div>
 
-        {/* PANEL DERECHO: ÁREA DE VIDEO PRINCIPAL (Se expande) */}
-        <div className="flex-1 h-full relative rounded-3xl overflow-hidden shadow-2xl bg-black flex flex-col">
-          
-          {/* Aquí iría tu etiqueta <video>. Usamos un placeholder de gradiente interactivo para el ejemplo */}
-          <div className="absolute inset-0 animate-gradient-xy bg-gradient-to-br from-[#172e59] via-slate-800 to-[#158e45] flex items-center justify-center">
-             {/* Simulación de Video */}
-             <div className="text-white/20 flex flex-col items-center">
-                <Volume2 className="w-24 h-24 mb-4" />
-                <span className="text-2xl font-bold tracking-widest uppercase text-center px-4">Área de Video Institucional o Promocional</span>
-                <span className="text-sm mt-2">Relación de aspecto nativa 16:9</span>
-             </div>
-          </div>
+        <!-- Fecha, Hora y Clima -->
+        <div class="flex items-center gap-6 bg-slate-50 px-6 py-3 rounded-2xl border border-slate-200 shadow-sm">
+            <div class="flex items-center gap-3 text-slate-600">
+                <i data-lucide="cloud-sun" class="w-8 h-8 text-[#172e59]"></i>
+                <div class="flex flex-col">
+                    <span class="font-bold text-lg leading-none">24°C</span>
+                    <span class="text-xs">Esquipulas</span>
+                </div>
+            </div>
+            <div class="h-10 w-px bg-slate-300"></div>
+            <div class="flex items-center gap-3">
+                <div class="flex flex-col items-end">
+                    <span id="clockTime" class="font-bold text-2xl text-[#172e59] leading-none">--:--</span>
+                    <span id="clockDate" class="text-sm text-slate-500 capitalize">Cargando...</span>
+                </div>
+            </div>
+        </div>
+    </header>
 
-          {/* Etiqueta flotante de la campaña actual (Video Overlay) */}
-          <div className="absolute top-8 left-8 z-20 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center gap-4">
-             <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-             <span className="text-white font-semibold">Educación Financiera 2026</span>
-          </div>
-          
-          {/* Indicador sutil de volumen o información adicional (opcional) */}
-          <div className="absolute bottom-8 right-8 z-20 bg-black/30 backdrop-blur-sm rounded-full p-3">
-             <Volume2 className="w-6 h-6 text-white/70" />
-          </div>
+    <!-- CONTENIDO PRINCIPAL (Videos + Banners) -->
+    <main class="relative z-10 flex-1 flex gap-6 p-6 h-[calc(100vh-190px)]">
+        
+        <!-- PANEL IZQUIERDO: BANNERS VERTICALES -->
+        <div class="w-[431px] h-full relative rounded-3xl overflow-hidden shadow-2xl bg-slate-800 flex-shrink-0 group">
+            <div id="bannersContainer" class="absolute inset-0 w-full h-full">
+                <!-- Las imágenes se inyectan por JavaScript -->
+            </div>
+
+            <!-- Indicadores de progreso del carrusel -->
+            <div id="progressContainer" class="absolute top-4 left-0 right-0 flex justify-center gap-2 z-20 px-4">
+                <!-- Los indicadores se inyectan por JavaScript -->
+            </div>
         </div>
 
-      </main>
+        <!-- PANEL DERECHO: ÁREA DE VIDEO PRINCIPAL (Se expande) -->
+        <div class="flex-1 h-full relative rounded-3xl overflow-hidden shadow-2xl bg-black flex flex-col">
+            
+            <!-- Aquí irá tu etiqueta <video> real. Placeholder por ahora -->
+            <div class="absolute inset-0 animate-gradient-xy bg-gradient-to-br from-[#172e59] via-slate-800 to-[#158e45] flex items-center justify-center">
+                <div class="text-white/20 flex flex-col items-center">
+                    <i data-lucide="volume-2" class="w-24 h-24 mb-4"></i>
+                    <span class="text-2xl font-bold tracking-widest uppercase text-center px-4">Área de Video Institucional o Promocional</span>
+                    <span class="text-sm mt-2">Relación de aspecto nativa 16:9</span>
+                </div>
+            </div>
 
-      {/* TICKER INFERIOR (Noticias y Datos en vivo) - Aprox 70px */}
-      <footer className="relative z-10 h-[70px] bg-[#172e59] text-white flex items-center overflow-hidden">
-        {/* Etiqueta fija izquierda */}
-        <div className="absolute left-0 top-0 bottom-0 z-20 bg-[#158e45] flex items-center px-6 shadow-[10px_0_20px_rgba(0,0,0,0.2)]">
-          <Info className="w-6 h-6 mr-2" />
-          <span className="font-bold text-lg whitespace-nowrap">Información:</span>
-          {/* Triángulo para integrar visualmente */}
-          <div className="absolute right-[-14px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-y-[35px] border-y-transparent border-l-[15px] border-l-[#158e45]"></div>
+            <!-- Etiqueta flotante -->
+            <div class="absolute top-8 left-8 z-20 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center gap-4">
+                <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                <span class="text-white font-semibold">Educación Financiera 2026</span>
+            </div>
+            
+            <!-- Indicador sutil de volumen -->
+            <div class="absolute bottom-8 right-8 z-20 bg-black/30 backdrop-blur-sm rounded-full p-3">
+                <i data-lucide="volume-2" class="w-6 h-6 text-white/70"></i>
+            </div>
         </div>
 
-        {/* Texto en movimiento */}
-        <div className="whitespace-nowrap animate-marquee flex items-center gap-12 text-lg font-medium ml-[250px]">
-          <span>🌟 Tasa de interés para cuenta de ahorro infantil: <strong>4.5%</strong> anual.</span>
-          <span className="text-[#158e45] text-2xl">•</span>
-          <span>💰 Tipo de cambio referencial: Compra <strong>Q7.70</strong> / Venta <strong>Q7.82</strong></span>
-          <span className="text-[#158e45] text-2xl">•</span>
-          <span>📱 ¡Descarga nuestra App Micoope y realiza tus transferencias sin salir de casa!</span>
-          <span className="text-[#158e45] text-2xl">•</span>
-          <span>🔒 Recuerda que COOSAJO nunca pedirá tus contraseñas por teléfono.</span>
-          <span className="text-[#158e45] text-2xl">•</span>
-          <span>🌟 Participa en nuestro sorteo de fin de mes actualizando tus datos.</span>
+    </main>
+
+    <!-- TICKER INFERIOR (Noticias y Datos en vivo) -->
+    <footer class="relative z-10 h-[70px] bg-[#172e59] text-white flex items-center overflow-hidden">
+        <!-- Etiqueta fija izquierda -->
+        <div class="absolute left-0 top-0 bottom-0 z-20 bg-[#158e45] flex items-center px-6 shadow-[10px_0_20px_rgba(0,0,0,0.2)]">
+            <i data-lucide="info" class="w-6 h-6 mr-2"></i>
+            <span class="font-bold text-lg whitespace-nowrap">Información:</span>
+            <!-- Triángulo -->
+            <div class="absolute right-[-14px] top-1/2 transform -translate-y-1/2 w-0 h-0 border-y-[35px] border-y-transparent border-l-[15px] border-l-[#158e45]"></div>
         </div>
-      </footer>
 
-    </div>
-  );
-};
+        <!-- Texto en movimiento -->
+        <div class="whitespace-nowrap animate-marquee flex items-center gap-12 text-lg font-medium ml-[250px]">
+            <span>🌟 Tasa de interés para cuenta de ahorro infantil: <strong>4.5%</strong> anual.</span>
+            <span class="text-[#158e45] text-2xl">•</span>
+            <span>💰 Tipo de cambio referencial: Compra <strong>Q7.70</strong> / Venta <strong>Q7.82</strong></span>
+            <span class="text-[#158e45] text-2xl">•</span>
+            <span>📱 ¡Descarga nuestra App Micoope y realiza tus transferencias sin salir de casa!</span>
+            <span class="text-[#158e45] text-2xl">•</span>
+            <span>🔒 Recuerda que COOSAJO nunca pedirá tus contraseñas por teléfono.</span>
+            <span class="text-[#158e45] text-2xl">•</span>
+            <span>🌟 Participa en nuestro sorteo de fin de mes actualizando tus datos.</span>
+        </div>
+    </footer>
 
-export default App;
+    <!-- LÓGICA DE INTERACTIVIDAD -->
+    <script>
+        // 1. Iniciar Iconos Lucide
+        lucide.createIcons();
+
+        // 2. Reloj y Fecha en tiempo real
+        function actualizarReloj() {
+            const ahora = new Date();
+            const timeString = ahora.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit', hour12: true });
+            const dateString = ahora.toLocaleDateString('es-GT', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            
+            document.getElementById('clockTime').textContent = timeString;
+            document.getElementById('clockDate').textContent = dateString;
+        }
+        setInterval(actualizarReloj, 1000);
+        actualizarReloj(); // Llamada inicial
+
+        // 3. Sistema de Banners Automáticos
+        const banners = [
+            { id: 1, img: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=431&h=767&q=80" },
+            { id: 2, img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&w=431&h=767&q=80" },
+            { id: 3, img: "https://images.unsplash.com/photo-1512428559087-560fa5ceab42?auto=format&fit=crop&w=431&h=767&q=80" }
+        ];
+
+        let currentBanner = 0;
+        const contenedorBanners = document.getElementById('bannersContainer');
+        const contenedorProgreso = document.getElementById('progressContainer');
+
+        // Construir el DOM de los banners
+        banners.forEach((banner, index) => {
+            // Imagen
+            const imgDiv = document.createElement('div');
+            imgDiv.id = `banner-${index}`;
+            imgDiv.className = `absolute inset-0 transition-opacity duration-1000 ${index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'}`;
+            imgDiv.innerHTML = `<img src="${banner.img}" alt="Banner ${banner.id}" class="w-full h-full object-cover" />`;
+            contenedorBanners.appendChild(imgDiv);
+
+            // Barra
+            const barraFondo = document.createElement('div');
+            barraFondo.className = "h-1.5 flex-1 bg-white/30 rounded-full overflow-hidden";
+            
+            const barraActiva = document.createElement('div');
+            barraActiva.id = `progreso-${index}`;
+            barraActiva.className = index === 0 ? "h-full bg-[#158e45] w-full animate-progress rounded-full" : "h-full bg-[#158e45] w-full rounded-full opacity-0";
+            
+            barraFondo.appendChild(barraActiva);
+            contenedorProgreso.appendChild(barraFondo);
+        });
+
+        // Rotar banners cada 8 segundos
+        setInterval(() => {
+            currentBanner = (currentBanner + 1) % banners.length;
+            
+            banners.forEach((_, index) => {
+                const bannerEl = document.getElementById(`banner-${index}`);
+                const progresoEl = document.getElementById(`progreso-${index}`);
+                
+                if (index === currentBanner) {
+                    bannerEl.className = "absolute inset-0 transition-opacity duration-1000 opacity-100 z-10";
+                    progresoEl.className = "h-full bg-[#158e45] w-full animate-progress rounded-full";
+                } else if (index < currentBanner) {
+                    bannerEl.className = "absolute inset-0 transition-opacity duration-1000 opacity-0 z-0";
+                    progresoEl.className = "h-full bg-[#158e45] w-full rounded-full opacity-100";
+                } else {
+                    bannerEl.className = "absolute inset-0 transition-opacity duration-1000 opacity-0 z-0";
+                    progresoEl.className = "h-full bg-[#158e45] w-full rounded-full opacity-0";
+                }
+            });
+        }, 8000);
+    </script>
+</body>
+</html>
