@@ -104,7 +104,8 @@
     </header>
 
     <!-- CONTENIDO PRINCIPAL (Videos + Banners) -->
-    <main class="relative z-10 flex-1 flex gap-6 p-6 h-[calc(100vh-190px)]">
+    <!-- Agregado min-h-0 para evitar que el contenido rompa el alto -->
+    <main class="relative z-10 flex-1 flex gap-6 p-6 h-[calc(100vh-190px)] min-h-0">
         
         <!-- PANEL IZQUIERDO: BANNERS VERTICALES -->
         <div class="w-[431px] h-full relative rounded-3xl overflow-hidden shadow-2xl bg-slate-800 flex-shrink-0 group">
@@ -118,17 +119,25 @@
             </div>
         </div>
 
-        <!-- PANEL DERECHO: ÁREA DE VIDEO PRINCIPAL (Proporción 16:9 estricta) -->
-        <div class="flex-1 h-full flex items-center justify-center">
-            <div class="w-full aspect-video relative rounded-3xl overflow-hidden shadow-2xl bg-black flex flex-col">
+        <!-- PANEL DERECHO: ÁREA DE VIDEO PRINCIPAL (Proporción 16:9 estricta sin desbordar) -->
+        <!-- bg-black asegura letterbox si sobra espacio, min-w-0 evita sobreponerse a los banners -->
+        <div class="flex-1 min-w-0 h-full relative rounded-3xl overflow-hidden shadow-2xl bg-black flex items-center justify-center">
+            
+            <!-- 
+              INSTRUCCIONES PARA EL VIDEO REAL:
+              Cuando conectes tu sistema, comenta o elimina el div del "Placeholder" de abajo 
+              y utiliza una etiqueta <video> con la clase "object-contain" como este ejemplo:
+              
+              <video src="RUTA_A_TU_VIDEO.mp4" autoplay loop muted class="absolute inset-0 w-full h-full object-contain"></video>
+            -->
+
+            <!-- Placeholder que simula el video exacto en 16:9 -->
+            <div class="relative w-full h-full flex flex-col items-center justify-center animate-gradient-xy bg-gradient-to-br from-[#172e59] via-slate-800 to-[#158e45]" style="aspect-ratio: 16/9; max-width: 100%; max-height: 100%;">
                 
-                <!-- Aquí irá tu etiqueta <video> real. Placeholder por ahora -->
-                <div class="absolute inset-0 animate-gradient-xy bg-gradient-to-br from-[#172e59] via-slate-800 to-[#158e45] flex items-center justify-center">
-                    <div class="text-white/20 flex flex-col items-center">
-                        <i data-lucide="monitor-play" class="w-24 h-24 mb-4"></i>
-                        <span class="text-2xl font-bold tracking-widest uppercase text-center px-4">Área de Video Institucional</span>
-                        <span class="text-lg mt-2 font-mono bg-black/30 px-3 py-1 rounded-lg border border-white/10">Proporción 16:9 Exacta</span>
-                    </div>
+                <div class="text-white/20 flex flex-col items-center z-10">
+                    <i data-lucide="monitor-play" class="w-24 h-24 mb-4"></i>
+                    <span class="text-2xl font-bold tracking-widest uppercase text-center px-4">Área de Video Institucional</span>
+                    <span class="text-lg mt-2 font-mono bg-black/30 px-3 py-1 rounded-lg border border-white/10">Proporción 16:9 Estricta</span>
                 </div>
 
                 <!-- Etiqueta flotante -->
@@ -136,12 +145,8 @@
                     <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
                     <span class="text-white font-semibold">Educación Financiera 2026</span>
                 </div>
-                
-                <!-- Indicador sutil de volumen -->
-                <div class="absolute bottom-8 right-8 z-20 bg-black/30 backdrop-blur-sm rounded-full p-3">
-                    <i data-lucide="volume-2" class="w-6 h-6 text-white/70"></i>
-                </div>
             </div>
+            
         </div>
 
     </main>
