@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pantalla Agencia COOSAJO - Escritorio</title>
+    <title>Pantalla Agencia COOSAJO</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
         @keyframes scroll-left { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
-        .animate-marquee { animation: scroll-left 35s linear infinite; }
+        .animate-marquee { animation: scroll-left 40s linear infinite; }
         
         @keyframes gradient-xy { 0%, 100% { background-size: 400% 400%; background-position: 0% 0%; } 50% { background-size: 400% 400%; background-position: 100% 100%; } }
         .animate-gradient-xy { animation: gradient-xy 15s ease infinite; }
@@ -19,8 +19,6 @@
         .animate-progress { animation: progress 8s linear infinite; }
         
         body { overflow: hidden; cursor: none; } /* Ocultar cursor para modo kiosco */
-        
-        .glass-panel { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); }
     </style>
 </head>
 <body class="relative w-full h-screen bg-slate-100 overflow-hidden font-sans text-slate-800 flex flex-col m-0 p-0">
@@ -30,12 +28,10 @@
 
     <header class="relative z-10 h-[120px] bg-white/95 backdrop-blur-sm shadow-md flex items-center justify-between px-8 border-b-4 border-[#158e45]">
         
-        <!-- Logo COOSAJO -->
         <div class="flex items-center">
             <img src="LOGO COOSAJO SIN ESLOGAN.png" alt="Logo COOSAJO" class="h-20 w-auto object-contain drop-shadow-sm" />
         </div>
 
-        <!-- Redes Sociales Compactas -->
         <div class="flex items-center gap-5 bg-white/60 px-5 py-2 rounded-xl border border-slate-100 shadow-sm">
             <div class="flex items-center gap-2 text-[#172e59]">
                 <img src="LOGO FACEBOOK.png" class="w-6 h-6 object-contain" />
@@ -48,12 +44,11 @@
             </div>
             <div class="h-6 w-px bg-slate-300"></div>
             <div class="flex items-center gap-2 text-[#172e59]">
-                <i data-lucide="globe" class="w-5 h-5"></i>
+                <i data-lucide="globe" class="w-5 h-5 text-[#172e59]"></i>
                 <span class="font-bold text-base">www.coosajo.com</span>
             </div>
         </div>
 
-        <!-- Reloj y Clima Real -->
         <div class="flex items-center gap-6 bg-slate-50 px-6 py-3 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3 text-slate-600">
                 <div id="weatherIconContainer">
@@ -74,27 +69,14 @@
 
     <main class="relative z-10 flex-1 flex gap-6 p-6 h-[calc(100vh-190px)] min-h-0">
         
-        <!-- Banners Verticales (431px) -->
         <div class="w-[431px] h-full relative rounded-3xl overflow-hidden shadow-2xl bg-slate-800 flex-shrink-0">
             <div id="bannersContainer" class="absolute inset-0 w-full h-full"></div>
             <div id="progressContainer" class="absolute top-4 left-0 right-0 flex justify-center gap-2 z-20 px-4"></div>
         </div>
 
-        <!-- Área de Video 16:9 Estricta -->
         <div class="flex-1 min-w-0 h-full relative rounded-3xl overflow-hidden shadow-2xl bg-black flex items-center justify-center">
-            
-            <!-- Audio Overlay (Necesario para que el navegador permita sonido) -->
-            <div id="audioOverlay" class="absolute inset-0 z-50 bg-black/80 flex flex-col items-center justify-center cursor-pointer transition-opacity duration-500">
-                <div class="bg-[#158e45] p-6 rounded-full animate-bounce shadow-2xl">
-                    <i data-lucide="volume-2" class="w-12 h-12 text-white"></i>
-                </div>
-                <h2 class="text-white text-2xl font-bold mt-6 uppercase tracking-widest">Activar Sonido COOSAJO TV</h2>
-                <p class="text-white/60 text-sm mt-2">Haz clic en la pantalla para iniciar con audio al 100%</p>
-            </div>
-
-            <!-- Reproductor de Video -->
-            <!-- Aquí reemplaza 'videos/institucional.mp4' por tu ruta real -->
-            <video id="mainVideo" class="absolute inset-0 w-full h-full object-contain" loop playsinline>
+            <!-- Video con Audio Siempre Activo (Auto-reproducción unmuted) -->
+            <video id="mainVideo" class="absolute inset-0 w-full h-full object-contain" autoplay loop playsinline>
                 <source src="videos/video_institucional.mp4" type="video/mp4">
             </video>
 
@@ -114,11 +96,11 @@
 
         <div class="whitespace-nowrap animate-marquee flex items-center gap-14 text-lg font-medium ml-[250px]">
             <!-- MAGICUENTA -->
-            <span>✨ ¡Ahorrar tiene premio! Por cada depósito de <strong class="text-yellow-400 text-2xl mx-1 shadow-sm">Q50</strong> en tu Magicuenta, llevate tus estampitas.</span>
+            <span>✨ ¡Ahorrar tiene premio! Por cada depósito de <strong class="text-yellow-400 text-3xl mx-2 shadow-sm font-black">Q50</strong> en tu Magicuenta, llevate tus estampitas.</span>
             <span class="text-[#158e45] text-2xl">•</span>
             <span>📖 Llenar el álbum es más fácil ahorrando. ¡Ven por tus estampitas con tu Magicuenta!</span>
             <span class="text-[#158e45] text-2xl">•</span>
-            <span>👨‍👩_👦 Incentiva su ahorro y completen el álbum juntos. ¡Pide tus estampitas por cada depósito de <strong class="text-yellow-400 text-2xl mx-1">Q50</strong>!</span>
+            <span>👨‍👩‍👦 Incentiva su ahorro y completen el álbum juntos. ¡Pide tus estampitas por depósito de <strong class="text-yellow-400 text-3xl mx-2 font-black">Q50</strong>!</span>
             <span class="text-[#158e45] text-2xl">•</span>
             
             <!-- AHORRO -->
@@ -141,7 +123,6 @@
     <script>
         lucide.createIcons();
 
-        // --- LÓGICA DE RELOJ ---
         function actualizarReloj() {
             const ahora = new Date();
             document.getElementById('clockTime').textContent = ahora.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit', hour12: true });
@@ -149,7 +130,6 @@
         }
         setInterval(actualizarReloj, 1000); actualizarReloj();
 
-        // --- STREAMING_CHUNK:Consultando clima dinámico de Esquipulas...
         async function fetchWeather() {
             try {
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.5667&longitude=-89.35&current=temperature_2m,weather_code');
@@ -163,25 +143,18 @@
                 
                 document.getElementById('weatherIconContainer').innerHTML = `<i data-lucide="${icon}" class="w-8 h-8 text-[#172e59]"></i>`;
                 lucide.createIcons();
-            } catch (e) {
-                document.getElementById('weatherTemp').textContent = '24°C'; 
-            }
+            } catch (e) { document.getElementById('weatherTemp').textContent = '24°C'; }
         }
         fetchWeather(); setInterval(fetchWeather, 900000);
 
-        // --- STREAMING_CHUNK:Configurando reproductor de video y audio...
         const video = document.getElementById('mainVideo');
-        const overlay = document.getElementById('audioOverlay');
-        
-        overlay.addEventListener('click', () => {
-            overlay.style.opacity = '0';
-            setTimeout(() => overlay.classList.add('hidden'), 500);
-            video.muted = false;
-            video.volume = 1.0;
-            video.play();
+        video.volume = 1.0; 
+        video.play().catch(e => {
+            console.log("Autoplay bloqueado por el navegador. Intentando de nuevo...");
+            // Si el navegador bloquea, intentamos forzarlo cada vez que haya un clic silencioso en el sistema
+            document.body.addEventListener('click', () => { video.muted = false; video.play(); }, { once: true });
         });
 
-        // --- STREAMING_CHUNK:Iniciando carrusel de banners verticales...
         const banners = [
             { img: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=431&h=767&q=80" },
             { img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&w=431&h=767&q=80" },
