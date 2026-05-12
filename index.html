@@ -56,7 +56,9 @@
         <!-- Reloj y Clima Real -->
         <div class="flex items-center gap-6 bg-slate-50 px-6 py-3 rounded-2xl border border-slate-200 shadow-sm">
             <div class="flex items-center gap-3 text-slate-600">
-                <i id="weatherIcon" data-lucide="cloud-sun" class="w-8 h-8 text-[#172e59]"></i>
+                <div id="weatherIconContainer">
+                    <i data-lucide="cloud-sun" class="w-8 h-8 text-[#172e59]"></i>
+                </div>
                 <div class="flex flex-col">
                     <span id="weatherTemp" class="font-bold text-lg leading-none">--°C</span>
                     <span class="text-xs">Esquipulas</span>
@@ -81,23 +83,24 @@
         <!-- Área de Video 16:9 Estricta -->
         <div class="flex-1 min-w-0 h-full relative rounded-3xl overflow-hidden shadow-2xl bg-black flex items-center justify-center">
             
-            <!-- Audio Overlay (Necesario para navegadores) -->
+            <!-- Audio Overlay (Necesario para que el navegador permita sonido) -->
             <div id="audioOverlay" class="absolute inset-0 z-50 bg-black/80 flex flex-col items-center justify-center cursor-pointer transition-opacity duration-500">
                 <div class="bg-[#158e45] p-6 rounded-full animate-bounce shadow-2xl">
                     <i data-lucide="volume-2" class="w-12 h-12 text-white"></i>
                 </div>
                 <h2 class="text-white text-2xl font-bold mt-6 uppercase tracking-widest">Activar Sonido COOSAJO TV</h2>
-                <p class="text-white/60 text-sm mt-2">Haz clic para iniciar la reproducción con audio</p>
+                <p class="text-white/60 text-sm mt-2">Haz clic en la pantalla para iniciar con audio al 100%</p>
             </div>
 
             <!-- Reproductor de Video -->
+            <!-- Aquí reemplaza 'videos/institucional.mp4' por tu ruta real -->
             <video id="mainVideo" class="absolute inset-0 w-full h-full object-contain" loop playsinline>
                 <source src="videos/video_institucional.mp4" type="video/mp4">
             </video>
 
             <div class="absolute top-8 left-8 z-20 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex items-center gap-4">
                 <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                <span class="text-white font-semibold">COOSAJO - Señal Informativa</span>
+                <span class="text-white font-semibold uppercase tracking-tighter">COOSAJO - Señal Informativa</span>
             </div>
         </div>
     </main>
@@ -115,9 +118,7 @@
             <span class="text-[#158e45] text-2xl">•</span>
             <span>📖 Llenar el álbum es más fácil ahorrando. ¡Ven por tus estampitas con tu Magicuenta!</span>
             <span class="text-[#158e45] text-2xl">•</span>
-            <span>👨‍👩‍👦 Incentiva su ahorro y completen el álbum juntos. ¡Estampitas por depósito de <strong class="text-yellow-400 text-2xl mx-1">Q50</strong>!</span>
-            <span class="text-[#158e45] text-2xl">•</span>
-            <span>✨ Cada ahorro en su Magicuenta es una nueva estampita para la colección.</span>
+            <span>👨‍👩_👦 Incentiva su ahorro y completen el álbum juntos. ¡Pide tus estampitas por cada depósito de <strong class="text-yellow-400 text-2xl mx-1">Q50</strong>!</span>
             <span class="text-[#158e45] text-2xl">•</span>
             
             <!-- AHORRO -->
@@ -148,20 +149,27 @@
         }
         setInterval(actualizarReloj, 1000); actualizarReloj();
 
-        // --- LÓGICA DE CLIMA REAL (API) ---
+        // --- STREAMING_CHUNK:Consultando clima dinámico de Esquipulas...
         async function fetchWeather() {
             try {
-                // Coordenadas Esquipulas
                 const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.5667&longitude=-89.35&current=temperature_2m,weather_code');
                 const data = await res.json();
                 document.getElementById('weatherTemp').textContent = `${Math.round(data.current.temperature_2m)}°C`;
+                
+                const code = data.current.weather_code;
+                let icon = 'sun';
+                if (code >= 1 && code <= 3) icon = 'cloud-sun';
+                else if (code >= 45) icon = 'cloud-rain';
+                
+                document.getElementById('weatherIconContainer').innerHTML = `<i data-lucide="${icon}" class="w-8 h-8 text-[#172e59]"></i>`;
+                lucide.createIcons();
             } catch (e) {
-                document.getElementById('weatherTemp').textContent = '24°C'; // Fallback
+                document.getElementById('weatherTemp').textContent = '24°C'; 
             }
         }
         fetchWeather(); setInterval(fetchWeather, 900000);
 
-        // --- MANEJO DE AUDIO Y VIDEO ---
+        // --- STREAMING_CHUNK:Configurando reproductor de video y audio...
         const video = document.getElementById('mainVideo');
         const overlay = document.getElementById('audioOverlay');
         
@@ -173,7 +181,7 @@
             video.play();
         });
 
-        // --- SISTEMA DE BANNERS ---
+        // --- STREAMING_CHUNK:Iniciando carrusel de banners verticales...
         const banners = [
             { img: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?auto=format&fit=crop&w=431&h=767&q=80" },
             { img: "https://images.unsplash.com/photo-1556761175-5973dc0f32d7?auto=format&fit=crop&w=431&h=767&q=80" },
