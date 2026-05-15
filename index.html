@@ -3,273 +3,316 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pantalla Agencia COOSAJO - Sistema de Transmisión</title>
+    <title>Agencia COOSAJO - Receptor Automático</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Cargamos HLS.js para una transmisión de video ultra estable -->
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #0f172a; margin: 0; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            overflow: hidden; 
+            background-color: #f1f5f9; 
+            margin: 0; 
+            cursor: none; /* Oculta el puntero para modo Kiosko */
+        }
         
         .bg-custom { 
             background-image: url('abstract-white-background-with-elegant-curving-lin-2026-01-07-23-20-12-utc.jpg'); 
-            background-size: cover; background-position: center; opacity: 0.6; position: absolute; inset: 0; z-index: 0;
+            background-size: cover; 
+            background-position: center; 
+            opacity: 0.6; 
+            position: absolute; 
+            inset: 0; 
+            z-index: 0;
         }
-        
-        .header-gradient { border-bottom: 6px solid #158e45; }
-        
+
         .animate-marquee { animation: scroll-left 45s linear infinite; }
         @keyframes scroll-left { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
         
-        .video-frame { 
-            box-shadow: 0 0 50px rgba(0,0,0,0.5); 
-            border: 12px solid #ffffff; 
+        .video-container { 
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.4); 
+            border: 10px solid #ffffff; 
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            background: #000;
             border-radius: 2.5rem;
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         #sidebar { 
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
-            width: 431px; opacity: 1; transform: translateX(0);
-        }
-        #sidebar.hidden-sidebar { 
-            width: 0; opacity: 0; margin-right: -1.5rem; pointer-events: none; transform: translateX(-40px);
+            width: 431px; 
+            opacity: 1; 
+            transform: translateX(0);
         }
 
-        .text-coosajo { color: #172e59; }
-        .bg-coosajo-green { background-color: #158e45; }
+        #sidebar.hidden-sidebar { 
+            width: 0; 
+            opacity: 0; 
+            margin-right: -1.5rem; 
+            pointer-events: none; 
+            transform: translateX(-40px);
+        }
+
+        .status-badge {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+        }
     </style>
 </head>
-<body class="w-full h-screen flex flex-col relative" onclick="activateAudio()">
+<body class="w-full h-screen flex flex-col relative" onclick="enableAudio()">
 
-    <!-- Fondo de Pantalla -->
+    <!-- Fondo decorativo -->
     <div class="bg-custom"></div>
 
-    <!-- Header Profesional (Idéntico a tu captura) -->
-    <header class="relative z-50 h-[120px] bg-white header-gradient flex items-center justify-between px-10 shadow-xl">
+    <!-- Header Permanente (Diseño según captura de Elián) -->
+    <header class="relative z-50 h-[125px] bg-white border-b-[6px] border-[#158e45] flex items-center justify-between px-12 shadow-xl">
         <div class="flex items-center gap-4">
-            <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-20" onerror="this.src='https://placehold.co/200x80?text=COOSAJO'">
-            <span class="text-3xl font-light italic text-slate-400">es</span>
-            <div class="flex flex-col leading-none">
-                <span class="text-3xl font-black text-[#172e59]">MICOOPE</span>
-            </div>
+            <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-24" onerror="this.src='https://placehold.co/200x80?text=COOSAJO'">
+            <span class="text-3xl font-light italic text-slate-300">es</span>
+            <span class="text-4xl font-black text-[#172e59] tracking-tighter">MICOOPE</span>
         </div>
         
-        <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-sm">
-                <img src="LOGO FACEBOOK.png" class="w-5 h-5 object-contain">
-                <span class="font-bold text-[#172e59] text-sm uppercase">COOSAJO</span>
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-3 bg-slate-50 border border-slate-100 px-5 py-3 rounded-2xl shadow-sm">
+                <img src="LOGO FACEBOOK.png" class="w-6 h-6 object-contain">
+                <span class="font-black text-[#172e59] text-lg uppercase tracking-tighter">COOSAJO</span>
             </div>
-            <div class="flex items-center gap-2 bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-sm">
-                <img src="LOGO INSTA.png" class="w-5 h-5 object-contain">
-                <span class="font-bold text-[#172e59] text-sm uppercase">@coosajo</span>
+            <div class="flex items-center gap-3 bg-slate-50 border border-slate-100 px-5 py-3 rounded-2xl shadow-sm">
+                <img src="LOGO INSTA.png" class="w-6 h-6 object-contain">
+                <span class="font-black text-[#172e59] text-lg uppercase tracking-tighter">@coosajo</span>
             </div>
-            <div class="flex items-center gap-3 bg-coosajo-green text-white px-6 py-2.5 rounded-xl shadow-md">
-                <i data-lucide="globe" class="w-5 h-5"></i>
-                <span class="font-black text-sm uppercase tracking-widest">www.coosajo.com</span>
+            <div class="flex items-center gap-4 bg-[#158e45] text-white px-6 py-3.5 rounded-2xl shadow-lg border-b-4 border-green-800">
+                <i data-lucide="globe" class="w-6 h-6"></i>
+                <span class="font-black text-lg uppercase tracking-widest">www.coosajo.com</span>
             </div>
         </div>
 
-        <div class="flex items-center gap-6">
-            <div class="flex items-center gap-3 bg-blue-50/50 px-5 py-2 rounded-xl border border-blue-100">
-                <div id="weatherIconContainer"><i data-lucide="sun" class="w-8 h-8 text-[#172e59]"></i></div>
+        <div class="flex items-center gap-10">
+            <div class="flex items-center gap-4 bg-blue-50/50 px-6 py-2.5 rounded-2xl border border-blue-100">
+                <div id="weatherIconContainer"><i data-lucide="sun" class="w-10 h-10 text-[#172e59]"></i></div>
                 <div class="flex flex-col text-right">
-                    <span id="weatherTemp" class="font-black text-2xl text-[#172e59] leading-none">24°C</span>
-                    <span class="text-[10px] uppercase font-bold text-coosajo-green">Esquipulas</span>
+                    <span id="weatherTemp" class="font-black text-3xl text-[#172e59] leading-none">24°C</span>
+                    <span class="text-[11px] uppercase font-black text-[#158e45] tracking-[0.2em]">Esquipulas</span>
                 </div>
             </div>
-            <div class="text-right border-l-2 border-slate-200 pl-6">
-                <div id="clockTime" class="font-black text-3xl text-[#172e59] leading-none">12:49 p.m.</div>
-                <div id="clockDate" class="text-[10px] text-coosajo-green font-black uppercase mt-1">Viernes, 15 de Mayo</div>
+            <div class="text-right border-l-[3px] border-slate-100 pl-10">
+                <div id="clockTime" class="font-black text-4xl text-[#172e59] leading-none tracking-tighter">--:--</div>
+                <div id="clockDate" class="text-[11px] text-[#158e45] font-black uppercase mt-1 tracking-widest">Cargando...</div>
             </div>
         </div>
     </header>
 
     <main class="relative z-10 flex-1 flex gap-6 p-6 min-h-0">
-        <!-- Sidebar Banners -->
-        <div id="sidebar" class="h-full relative video-frame overflow-hidden bg-slate-900 flex-shrink-0 border-none">
+        <!-- Sidebar para Banners (Se oculta en partido) -->
+        <div id="sidebar" class="h-full relative overflow-hidden video-container flex-shrink-0">
             <div id="bannersContainer" class="absolute inset-0 w-full h-full"></div>
         </div>
 
-        <!-- Pantalla de Video (Con bordes blancos como tu captura) -->
-        <div class="flex-1 min-w-0 h-full relative video-frame overflow-hidden bg-black flex items-center justify-center">
+        <!-- Área de Video Principal -->
+        <div class="flex-1 min-w-0 h-full relative overflow-hidden video-container flex items-center justify-center bg-black">
+            <!-- Video del Partido (Live) -->
+            <video id="liveVideo" class="absolute inset-0 w-full h-full object-contain z-10" autoplay playsinline></video>
             
-            <!-- Video de Transmisión (HLS o Local) -->
-            <video id="mainPlayer" class="absolute inset-0 w-full h-full object-contain z-10" autoplay playsinline></video>
-            
-            <!-- Video de Publicidad Local -->
+            <!-- Video de Publicidad -->
             <video id="adPlayer" class="absolute inset-0 w-full h-full object-contain z-30 hidden bg-black" playsinline></video>
 
-            <!-- Info de Transmisión -->
-            <div id="streamOverlay" class="absolute inset-0 z-20 pointer-events-none p-8 flex flex-col justify-between opacity-0 transition-opacity duration-1000">
+            <!-- Overlay de Información -->
+            <div id="streamUI" class="absolute inset-0 z-20 pointer-events-none p-8 flex flex-col justify-between opacity-0 transition-opacity duration-700">
                 <div class="flex justify-between items-start">
-                    <div class="bg-white/95 rounded-2xl px-6 py-4 border-l-[10px] border-red-500 flex items-center gap-4 shadow-2xl">
+                    <div class="status-badge rounded-2xl px-6 py-4 border-l-8 border-red-500 flex items-center gap-4 shadow-2xl">
                         <div class="w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
-                        <span class="font-black text-[#172e59] uppercase tracking-tighter text-2xl">Señal en Directo</span>
+                        <span class="font-black text-[#172e59] uppercase tracking-tighter text-2xl">En Directo</span>
                     </div>
-                    <div class="bg-coosajo-green text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-5 border-b-4 border-green-900">
+                    <div class="bg-[#158e45] text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-5 border-b-4 border-green-900">
                         <i data-lucide="tv" class="w-8 h-8"></i>
                         <div class="flex flex-col">
-                            <span class="text-[11px] uppercase font-black opacity-80 leading-none">Publicidad en:</span>
+                            <span class="text-[11px] uppercase font-black opacity-80 leading-none">Corte publicitario en:</span>
                             <span id="countdown" class="font-mono text-3xl font-black">15:00</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Mensaje de Espera -->
-            <div id="waitingScreen" class="absolute inset-0 z-40 bg-[#0f172a] flex flex-col items-center justify-center text-white p-12 text-center">
-                <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-32 mb-10 opacity-20 grayscale">
-                <h2 class="text-4xl font-black uppercase tracking-[0.4em] text-slate-500 mb-4 italic">Buscando Señal...</h2>
-                <div class="w-64 h-1.5 bg-white/5 rounded-full overflow-hidden">
-                    <div class="h-full bg-coosajo-green animate-[progress_2s_infinite]"></div>
+            <!-- Pantalla de Búsqueda -->
+            <div id="waitingMsg" class="absolute inset-0 z-40 bg-slate-950 flex flex-col items-center justify-center text-white p-12 text-center transition-all duration-1000">
+                <div class="relative mb-8">
+                    <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-32 opacity-20">
+                    <div class="absolute inset-0 flex items-center justify-center">
+                         <div class="w-20 h-20 border-4 border-[#158e45] border-t-transparent rounded-full animate-spin"></div>
+                    </div>
                 </div>
-                <p class="mt-20 text-blue-400 text-xs uppercase animate-pulse font-bold tracking-widest border border-blue-400/20 px-6 py-2 rounded-full">Sistema Automatizado COOSAJO R.L.</p>
+                <h2 class="text-3xl font-black uppercase tracking-[0.2em] text-slate-400">Sincronizando con Master...</h2>
+                <p id="netStatus" class="mt-4 text-[#158e45] font-bold text-xs uppercase tracking-widest animate-pulse italic">Esperando señal de Mesa Técnica Maestra</p>
             </div>
         </div>
     </main>
 
     <!-- Footer de Noticias -->
-    <footer class="relative z-50 h-[80px] bg-[#172e59] text-white flex items-center overflow-hidden border-t-2 border-white/5">
-        <div class="absolute left-0 top-0 bottom-0 z-20 bg-coosajo-green flex items-center px-10 shadow-2xl">
+    <footer class="relative z-50 h-[85px] bg-[#172e59] text-white flex items-center overflow-hidden border-t-4 border-white/5">
+        <div class="absolute left-0 top-0 bottom-0 z-20 bg-[#158e45] flex items-center px-10 shadow-2xl">
             <span class="font-black text-2xl uppercase tracking-tighter italic italic">NOTICIAS COOSAJO</span>
         </div>
         <div class="whitespace-nowrap animate-marquee flex items-center gap-24 text-2xl font-bold ml-[350px]">
-            <span>✨ ¡Ahorrar tiene premio! Por cada depósito de <strong class="text-yellow-400 text-4xl font-black italic">Q50</strong> en tu Magicuenta, llévate tus estampitas.</span>
+            <span>✨ ¡Ahorrar tiene premio! Por cada depósito de <strong class="text-yellow-400 text-4xl font-black italic italic italic">Q50</strong> en tu Magicuenta, llévate tus estampitas.</span>
             <span>🚀 Impulsa tu negocio con un crédito diseñado para que sigas creciendo al ritmo que quieres.</span>
-            <span>🛡️ Tu esfuerzo diario es el futuro de los que más querés. ¡COOSAJO es tu casa!</span>
+            <span>🛡️ Cuidamos tu ahorro con el respeto que vos le tenés. ¡COOSAJO es tu casa!</span>
         </div>
     </footer>
 
     <script>
         lucide.createIcons();
-        const mainPlayer = document.getElementById('mainPlayer');
+        const liveVideo = document.getElementById('liveVideo');
         const adPlayer = document.getElementById('adPlayer');
         const sidebar = document.getElementById('sidebar');
-        
-        // CONFIGURACIÓN DE TU SEÑAL (Cámbiala aquí)
-        // Puedes usar un archivo .m3u8 de un servidor HLS o simplemente un link de video
-        const STREAM_SOURCE = "videos/partido_live.m3u8"; 
+        const netStatus = document.getElementById('netStatus');
         
         let timerValue = 15 * 60;
-        let isLive = false;
+        let peer = null;
+        let connectionActive = false;
         let cycleInterval = null;
+        let masterConn = null;
 
-        function activateAudio() {
-            mainPlayer.muted = false;
-            mainPlayer.volume = 1.0;
+        // Función para activar audio si no se usa modo Kiosko
+        function enableAudio() {
+            liveVideo.muted = false;
+            liveVideo.volume = 1.0;
             adPlayer.muted = false;
             adPlayer.volume = 1.0;
-            console.log("Audio desbloqueado");
         }
 
-        function initStream() {
-            // Si usas HLS (Recomendado para OBS)
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(STREAM_SOURCE);
-                hls.attachMedia(mainPlayer);
-                hls.on(Hls.Events.MANIFEST_PARSED, () => {
-                    startLiveMode();
+        function initPeer() {
+            if (peer) peer.destroy();
+            peer = new Peer();
+
+            peer.on('open', (id) => {
+                console.log("Agencia lista. Buscando a Master...");
+                intentarLlamarAMaster();
+            });
+
+            peer.on('call', (call) => {
+                call.answer(); // Contestamos a la llamada del master
+                call.on('stream', (remoteStream) => {
+                    liveVideo.srcObject = remoteStream;
+                    document.getElementById('waitingMsg').classList.add('hidden');
+                    document.getElementById('streamUI').classList.remove('opacity-0');
+                    sidebar.classList.add('hidden-sidebar');
+                    enableAudio();
                 });
-            } 
-            // Fallback para videos directos
-            else if (mainPlayer.canPlayType('application/vnd.apple.mpegurl')) {
-                mainPlayer.src = STREAM_SOURCE;
-                mainPlayer.addEventListener('loadedmetadata', () => {
-                    startLiveMode();
-                });
-            }
-            
-            // Simulación para pruebas: Si no tienes el server HLS aún, 
-            // este intervalo detecta si el video cargó de alguna forma
-            setInterval(() => {
-                if(!isLive && mainPlayer.readyState > 2) startLiveMode();
-            }, 3000);
+            });
+
+            peer.on('error', (err) => {
+                setTimeout(initPeer, 5000);
+            });
         }
 
-        function startLiveMode() {
-            if (isLive) return;
-            isLive = true;
-            document.getElementById('waitingScreen').classList.add('hidden');
-            document.getElementById('streamOverlay').classList.remove('opacity-0');
-            sidebar.classList.add('hidden-sidebar');
-            mainPlayer.play();
-            startCycle();
+        function intentarLlamarAMaster() {
+            // Intentamos conectar datos con el ID fijo del master
+            masterConn = peer.connect('COOSAJO-MASTER-EL-MAGIC');
+
+            masterConn.on('open', () => {
+                netStatus.textContent = "SINCRO ACTIVA - ESPERANDO INICIO";
+                console.log("Conectado a Mesa Maestra");
+            });
+
+            masterConn.on('data', (data) => {
+                if (data.type === 'START_MATCH') {
+                    timerValue = data.duration * 60;
+                    sidebar.classList.add('hidden-sidebar');
+                    startCycle();
+                } else if (data.type === 'STOP_ALL') {
+                    resetToWaiting();
+                }
+            });
+
+            masterConn.on('close', () => {
+                setTimeout(intentarLlamarAMaster, 5000);
+            });
         }
 
         function startCycle() {
             if (cycleInterval) clearInterval(cycleInterval);
-            timerValue = 15 * 60;
             cycleInterval = setInterval(() => {
                 timerValue--;
                 const m = Math.floor(timerValue / 60);
                 const s = timerValue % 60;
                 document.getElementById('countdown').textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                if (timerValue <= 0) { clearInterval(cycleInterval); runAds(); }
+                
+                if (timerValue <= 0) {
+                    clearInterval(cycleInterval);
+                    lanzarPublicidad();
+                }
             }, 1000);
         }
 
-        function runAds() {
+        function lanzarPublicidad() {
             sidebar.classList.remove('hidden-sidebar');
-            mainPlayer.style.opacity = "0";
+            liveVideo.style.opacity = "0";
+            liveVideo.muted = true; // Silenciamos partido durante ads
+            
             let currentAd = 1;
-
             const playNext = () => {
                 if (currentAd <= 3) {
                     adPlayer.classList.remove('hidden');
                     adPlayer.src = `videos/publicidad_${currentAd}.mp4`;
-                    adPlayer.play().catch(skip);
-                    adPlayer.onended = skip;
+                    adPlayer.muted = false;
+                    adPlayer.volume = 1.0;
+                    adPlayer.play().catch(() => next());
+                    adPlayer.onended = next;
                 } else {
-                    finishAds();
+                    finalizarAds();
                 }
             };
-
-            const skip = () => { currentAd++; playNext(); };
+            const next = () => { currentAd++; playNext(); };
             playNext();
         }
 
-        function finishAds() {
+        function finalizarAds() {
             adPlayer.classList.add('hidden');
-            mainPlayer.style.opacity = "1";
+            liveVideo.style.opacity = "1";
+            liveVideo.muted = false;
             sidebar.classList.add('hidden-sidebar');
-            startCycle();
+            startCycle(); // Reinicia el ciclo configurado
         }
 
-        // Reloj y Fecha (Formato captura)
-        function updateClock() {
+        function resetToWaiting() {
+            clearInterval(cycleInterval);
+            liveVideo.srcObject = null;
+            document.getElementById('streamUI').classList.add('opacity-0');
+            document.getElementById('waitingMsg').classList.remove('hidden');
+            sidebar.classList.remove('hidden-sidebar');
+            adPlayer.classList.add('hidden');
+            adPlayer.pause();
+        }
+
+        // Reloj y Clima
+        setInterval(() => {
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit', hour12: true });
-            const dateStr = now.toLocaleDateString('es-GT', { weekday: 'long', day: 'numeric', month: 'long' });
-            document.getElementById('clockTime').textContent = timeStr;
-            document.getElementById('clockDate').textContent = dateStr;
-        }
-        setInterval(updateClock, 1000); updateClock();
+            document.getElementById('clockTime').textContent = now.toLocaleTimeString('es-GT', {hour:'2-digit', minute:'2-digit', hour12: true});
+            document.getElementById('clockDate').textContent = now.toLocaleDateString('es-GT', {weekday:'long', day:'numeric', month:'long'});
+        }, 1000);
 
-        // Banners Laterales
         function initBanners() {
             const container = document.getElementById('bannersContainer');
             for(let i=1; i<=8; i++) {
                 const img = document.createElement('img');
                 img.src = `Lateral ${i}.png`;
                 img.className = "absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000";
-                img.id = `banner-${i}`;
-                img.onerror = () => img.src = `https://placehold.co/431x800/172e59/ffffff?text=Promo+COOSAJO+${i}`;
+                img.id = `b-${i}`;
+                img.onerror = () => img.src = `https://placehold.co/431x800/172e59/ffffff?text=Promo+${i}`;
                 container.appendChild(img);
             }
             let cur = 1;
             setInterval(() => {
-                document.getElementById(`banner-${cur}`).style.opacity = 0;
-                cur = cur % 8 + 1;
-                document.getElementById(`banner-${cur}`).style.opacity = 1;
+                const prev = cur; cur = cur % 8 + 1;
+                document.getElementById(`b-${prev}`).style.opacity = 0;
+                document.getElementById(`b-${cur}`).style.opacity = 1;
             }, 8000);
-            document.getElementById('banner-1').style.opacity = 1;
+            document.getElementById('b-1').style.opacity = 1;
         }
 
+        initPeer();
         initBanners();
-        initStream();
     </script>
 </body>
 </html>
