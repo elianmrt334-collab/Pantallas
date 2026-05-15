@@ -22,6 +22,7 @@
             box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.4); 
             border: 10px solid #ffffff; 
             transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            background: #000;
         }
 
         #sidebar { 
@@ -31,16 +32,17 @@
         #sidebar.hidden-sidebar { 
             width: 0; opacity: 0; margin-right: -1.5rem; pointer-events: none; transform: translateX(-40px);
         }
-        .animate-progress { animation: progress-bar 8s linear infinite; }
-        @keyframes progress-bar { 0% { width: 0%; } 100% { width: 100%; } }
     </style>
 </head>
-<body class="w-full h-screen flex flex-col relative" onclick="forceVolume()">
+<body class="w-full h-screen flex flex-col relative" onclick="enableEverything()">
 
     <div class="bg-custom"></div>
 
+    <!-- Header Permanente -->
     <header class="relative z-50 h-[125px] bg-white shadow-xl flex items-center justify-between px-12 border-b-[6px] border-[#158e45]">
-        <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-24" onerror="this.src='https://placehold.co/200x80?text=COOSAJO'">
+        <div class="flex items-center gap-4">
+            <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-24" onerror="this.src='https://placehold.co/200x80?text=COOSAJO'">
+        </div>
         
         <div class="flex items-center gap-6">
             <div class="flex items-center gap-3 bg-slate-50 border border-slate-100 px-5 py-3 rounded-2xl shadow-sm">
@@ -73,40 +75,44 @@
     </header>
 
     <main class="relative z-10 flex-1 flex gap-6 p-6 min-h-0">
-        <div id="sidebar" class="h-full relative rounded-[2.5rem] overflow-hidden video-container bg-slate-900 flex-shrink-0">
+        <!-- Laterales que se ocultan -->
+        <div id="sidebar" class="h-full relative rounded-[2.5rem] overflow-hidden video-container flex-shrink-0">
             <div id="bannersContainer" class="absolute inset-0 w-full h-full"></div>
-            <div id="progressContainer" class="absolute top-6 left-0 right-0 flex justify-center gap-2 z-20 px-8"></div>
         </div>
 
-        <div class="flex-1 min-w-0 h-full relative rounded-[2.5rem] overflow-hidden video-container bg-black flex items-center justify-center">
-            <video id="liveVideo" class="absolute inset-0 w-full h-full object-contain z-10" autoplay playsinline></video>
+        <!-- Área de Video Principal -->
+        <div class="flex-1 min-w-0 h-full relative rounded-[2.5rem] overflow-hidden video-container flex items-center justify-center">
+            <video id="liveVideo" class="absolute inset-0 w-full h-full object-contain z-10 bg-black" autoplay playsinline></video>
             <video id="adPlayer" class="absolute inset-0 w-full h-full object-contain z-30 hidden bg-black" playsinline></video>
 
+            <!-- Overlay de Información -->
             <div id="streamUI" class="absolute inset-0 z-20 pointer-events-none p-8 flex flex-col justify-between opacity-0 transition-opacity">
                 <div class="flex justify-between items-start">
                     <div class="bg-white/90 backdrop-blur-md rounded-2xl px-6 py-4 border-l-8 border-red-500 flex items-center gap-4 shadow-2xl">
                         <div class="w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
-                        <span class="font-black text-[#172e59] uppercase tracking-tighter text-2xl">Señal en Vivo</span>
+                        <span class="font-black text-[#172e59] uppercase tracking-tighter text-2xl">Transmisión en Vivo</span>
                     </div>
                     <div class="bg-[#158e45] text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-5 border-b-4 border-green-900">
                         <i data-lucide="tv" class="w-8 h-8"></i>
                         <div class="flex flex-col">
-                            <span class="text-[11px] uppercase font-black opacity-80 leading-none tracking-widest">Siguiente corte en:</span>
+                            <span class="text-[11px] uppercase font-black opacity-80 leading-none">Corte Publicitario en:</span>
                             <span id="countdown" class="font-mono text-3xl font-black">15:00</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="waitingMsg" class="absolute inset-0 z-40 bg-slate-900 flex flex-col items-center justify-center text-white p-12 text-center">
+            <!-- Pantalla de Espera -->
+            <div id="waitingMsg" class="absolute inset-0 z-40 bg-slate-900 flex flex-col items-center justify-center text-white p-12 text-center transition-all duration-1000">
                 <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-32 mb-8 opacity-40">
                 <h2 class="text-3xl font-black uppercase tracking-widest text-slate-400">Buscando Señal Maestra...</h2>
                 <div class="mt-6 flex gap-3">
-                    <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                    <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                    <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+                    <div class="w-3 h-3 bg-[#158e45] rounded-full animate-bounce"></div>
+                    <div class="w-3 h-3 bg-[#158e45] rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                    <div class="w-3 h-3 bg-[#158e45] rounded-full animate-bounce [animation-delay:0.4s]"></div>
                 </div>
-                <p class="mt-12 text-blue-400 text-xs uppercase animate-pulse font-bold">Haga clic en la pantalla para activar el audio al 100%</p>
+                <div id="connStatus" class="mt-8 text-[10px] text-slate-500 uppercase tracking-widest font-bold">Iniciando sistema de red...</div>
+                <p class="mt-20 text-blue-400 text-xs uppercase animate-pulse font-bold border border-blue-400/20 px-4 py-2 rounded-full">Haga clic en cualquier lugar para habilitar audio al 100%</p>
             </div>
         </div>
     </main>
@@ -116,9 +122,9 @@
             <span class="font-black text-2xl uppercase tracking-tighter italic">Noticias COOSAJO</span>
         </div>
         <div class="whitespace-nowrap animate-marquee flex items-center gap-24 text-2xl font-bold ml-[350px]">
-            <span>✨ ¡Ahorrar tiene premio! Por cada depósito de <strong class="text-yellow-400 text-4xl font-black italic">Q50</strong> en tu Magicuenta, llévate tus estampitas.</span>
+            <span>✨ ¡Ahorrar tiene premio! Por cada depósito de <strong class="text-yellow-400 text-4xl font-black">Q50</strong> en tu Magicuenta, llévate tus estampitas.</span>
             <span>🚀 Impulsa tu negocio con un crédito diseñado para que sigas creciendo al ritmo que quieres.</span>
-            <span>🏠 Tu esfuerzo diario es el futuro de los que más querés. ¡Construyamos juntos!</span>
+            <span>🛡️ Cuidamos tu ahorro con el respeto que vos le tenés. ¡COOSAJO es tu casa!</span>
         </div>
     </footer>
 
@@ -127,78 +133,92 @@
         const liveVideo = document.getElementById('liveVideo');
         const adPlayer = document.getElementById('adPlayer');
         const sidebar = document.getElementById('sidebar');
+        const statusText = document.getElementById('connStatus');
         let timerValue = 15 * 60;
         let peer = null;
         let connectionActive = false;
         let cycleInterval = null;
 
-        function forceVolume() {
-            liveVideo.volume = 1.0; liveVideo.muted = false;
-            adPlayer.volume = 1.0; adPlayer.muted = false;
-            if(liveVideo.paused) liveVideo.play().catch(()=>{});
+        // Función para desbloquear audio (Crucial)
+        function enableEverything() {
+            liveVideo.muted = false;
+            liveVideo.volume = 1.0;
+            adPlayer.muted = false;
+            adPlayer.volume = 1.0;
+            if(liveVideo.paused && connectionActive) liveVideo.play().catch(()=>{});
+            console.log("Audio y Video habilitados por usuario.");
         }
 
-        function connect() {
-            if (connectionActive) return;
-            
+        function initPeer() {
             if (peer) peer.destroy();
+            
+            // Creamos un ID aleatorio para la agencia para que no choque con otros
             peer = new Peer();
 
             peer.on('open', (id) => {
-                console.log("Buscando a Master...");
-                // Intentamos llamar al ID fijo de la oficina
-                const call = peer.call('COOSAJO-MASTER-MAGIC', new MediaStream());
-                
-                call.on('stream', (remoteStream) => {
-                    if (connectionActive) return;
-                    console.log("¡Señal Recibida!");
-                    handleStreamStart(remoteStream);
-                });
-
-                call.on('close', resetToWaiting);
-                call.on('error', (err) => {
-                    console.error("Error en llamada:", err);
-                    resetToWaiting();
-                });
+                statusText.textContent = "Conectado al servidor. Buscando Mesa Técnica...";
+                startConnecting();
             });
 
             peer.on('error', (err) => {
-                console.log("Esperando servidor...");
-                connectionActive = false;
+                statusText.textContent = "Error de red. Reintentando...";
+                setTimeout(initPeer, 5000);
             });
+        }
+
+        function startConnecting() {
+            if (connectionActive) return;
+            
+            // Intentamos llamar a la Mesa Maestra
+            const call = peer.call('COOSAJO-MASTER-MAGIC', new MediaStream());
+            
+            call.on('stream', (remoteStream) => {
+                if (connectionActive) return;
+                statusText.textContent = "¡SEÑAL ENCONTRADA!";
+                handleStreamStart(remoteStream);
+            });
+
+            call.on('close', resetToWaiting);
+            
+            // Si en 5 segundos no hay respuesta, reintentamos la llamada
+            setTimeout(() => {
+                if (!connectionActive) startConnecting();
+            }, 5000);
         }
 
         function handleStreamStart(stream) {
             liveVideo.srcObject = stream;
             connectionActive = true;
             document.getElementById('streamUI').classList.remove('opacity-0');
-            document.getElementById('waitingMsg').classList.add('hidden');
+            document.getElementById('waitingMsg').style.opacity = "0";
+            setTimeout(() => document.getElementById('waitingMsg').classList.add('hidden'), 1000);
             sidebar.classList.add('hidden-sidebar');
-            forceVolume();
+            
+            liveVideo.play().catch(() => {
+                statusText.textContent = "Señal recibida. Haga clic para ver.";
+            });
+            
             startCycle();
         }
 
         function resetToWaiting() {
-            if (!connectionActive) return;
             connectionActive = false;
             clearInterval(cycleInterval);
             liveVideo.srcObject = null;
             document.getElementById('streamUI').classList.add('opacity-0');
             document.getElementById('waitingMsg').classList.remove('hidden');
+            document.getElementById('waitingMsg').style.opacity = "1";
             sidebar.classList.remove('hidden-sidebar');
             adPlayer.classList.add('hidden');
             adPlayer.pause();
-            liveVideo.style.opacity = "1";
+            statusText.textContent = "Señal perdida. Reintentando conexión...";
         }
-
-        // Reintento automático cada 4 segundos
-        setInterval(connect, 4000);
 
         function startCycle() {
             timerValue = 15 * 60;
             if (cycleInterval) clearInterval(cycleInterval);
             cycleInterval = setInterval(() => {
-                if (!connectionActive) { clearInterval(cycleInterval); return; }
+                if (!connectionActive) return;
                 timerValue--;
                 const m = Math.floor(timerValue / 60);
                 const s = timerValue % 60;
@@ -215,7 +235,6 @@
                 if (idx <= 3) {
                     adPlayer.classList.remove('hidden');
                     adPlayer.src = `videos/publicidad_${idx}.mp4`;
-                    forceVolume();
                     adPlayer.play().catch(next);
                     adPlayer.onended = next;
                 } else { finAds(); }
@@ -228,7 +247,6 @@
             adPlayer.classList.add('hidden');
             sidebar.classList.add('hidden-sidebar');
             liveVideo.style.opacity = "1";
-            forceVolume();
             startCycle();
         }
 
@@ -258,6 +276,9 @@
             }, 8000);
             document.getElementById('b-1').style.opacity = 1;
         }
+        
+        // Iniciar todo
+        initPeer();
         initBanners();
     </script>
 </body>
