@@ -35,7 +35,7 @@
         @keyframes progress-bar { 0% { width: 0%; } 100% { width: 100%; } }
     </style>
 </head>
-<body class="w-full h-screen flex flex-col relative">
+<body class="w-full h-screen flex flex-col relative" onclick="forceVolume()">
 
     <div class="bg-custom"></div>
 
@@ -101,14 +101,10 @@
             <div id="waitingMsg" class="absolute inset-0 z-40 bg-slate-900 flex flex-col items-center justify-center text-white p-12 text-center">
                 <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-20 mb-8 opacity-20">
                 <h2 class="text-3xl font-black uppercase tracking-widest text-slate-500">Buscando Señal Maestra...</h2>
-                <p id="errorNote" class="text-slate-600 mt-4 text-xs font-bold uppercase max-w-md">
-                    Nota: En este entorno (Canvas), los WebSockets están bloqueados. Use el botón de prueba para simular la estética.
-                </p>
-                
-                <button onclick="testLocalMode()" class="mt-8 bg-[#158e45] hover:bg-green-600 px-8 py-4 rounded-2xl font-black uppercase tracking-widest transition-all hover:scale-105 shadow-2xl flex items-center gap-4">
-                    <i data-lucide="play" class="w-6 h-6"></i>
-                    MODO PRUEBA LOCAL (CANVAS)
-                </button>
+                <div class="mt-4 p-4 border border-white/5 bg-white/5 rounded-xl text-[10px] uppercase font-bold tracking-widest text-slate-400">
+                    Sincronización Automática Activa
+                </div>
+                <p class="mt-8 text-blue-400 text-[9px] uppercase animate-pulse">Haga clic en cualquier lugar para habilitar audio al 100%</p>
             </div>
         </div>
     </main>
@@ -131,25 +127,32 @@
         let timerValue = 15 * 60;
         let peer;
         let connectionActive = false;
+        let cycleInterval = null;
 
         function forceVolume() {
             liveVideo.volume = 1.0; liveVideo.muted = false;
             adPlayer.volume = 1.0; adPlayer.muted = false;
+            console.log("Audio habilitado al 100%");
         }
 
-        // Intento de conexión con PeerJS (Funcionará fuera del Canvas)
         function connect() {
             if (connectionActive) return;
             try {
                 if (!peer || peer.destroyed) peer = new Peer();
                 peer.on('open', () => {
+                    console.log("Intentando conectar con Master...");
                     const call = peer.call('COOSAJO-MASTER-MAGIC', new MediaStream());
+                    
                     call.on('stream', (stream) => {
                         handleStreamStart(stream);
                     });
+
+                    // Si el emisor corta la señal
+                    call.on('close', resetToWaiting);
+                    call.on('error', resetToWaiting);
                 });
                 peer.on('error', () => { connectionActive = false; });
-            } catch (e) { console.log("Red restringida (Canvas)"); }
+            } catch (e) { connectionActive = false; }
         }
 
         function handleStreamStart(stream) {
@@ -162,26 +165,29 @@
             startCycle();
         }
 
-        // Función para probar aquí en el chat sin errores de WebSocket
-        async function testLocalMode() {
-            try {
-                const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
-                handleStreamStart(stream);
-            } catch (e) { 
-                // Error silencioso si cancela
-            }
+        function resetToWaiting() {
+            connectionActive = false;
+            clearInterval(cycleInterval);
+            liveVideo.srcObject = null;
+            document.getElementById('streamUI').classList.add('opacity-0');
+            document.getElementById('waitingMsg').classList.remove('hidden');
+            sidebar.classList.remove('hidden-sidebar');
+            adPlayer.classList.add('hidden');
+            adPlayer.pause();
+            liveVideo.style.opacity = "1";
         }
 
         setInterval(connect, 5000);
 
         function startCycle() {
-            const t = setInterval(() => {
-                if (!connectionActive) { clearInterval(t); return; }
+            if (cycleInterval) clearInterval(cycleInterval);
+            cycleInterval = setInterval(() => {
+                if (!connectionActive) { clearInterval(cycleInterval); return; }
                 timerValue--;
                 const m = Math.floor(timerValue / 60);
                 const s = timerValue % 60;
                 document.getElementById('countdown').textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-                if (timerValue <= 0) { clearInterval(t); lanzarAds(); }
+                if (timerValue <= 0) { clearInterval(cycleInterval); lanzarAds(); }
             }, 1000);
         }
 
@@ -211,6 +217,7 @@
             startCycle();
         }
 
+        // Reloj y Clima
         setInterval(() => {
             const now = new Date();
             document.getElementById('clockTime').textContent = now.toLocaleTimeString('es-GT', {hour:'2-digit', minute:'2-digit', hour12: true});
@@ -229,15 +236,14 @@
             }
             let cur = 1;
             setInterval(() => {
-                document.getElementById(`b-${cur}`).style.opacity = 0;
+                const prev = cur;
                 cur = cur % 8 + 1;
+                document.getElementById(`b-${prev}`).style.opacity = 0;
                 document.getElementById(`b-${cur}`).style.opacity = 1;
             }, 8000);
             document.getElementById('b-1').style.opacity = 1;
         }
         initBanners();
-
-        document.body.addEventListener('click', () => { forceVolume(); }, { once: true });
     </script>
 </body>
 </html>
