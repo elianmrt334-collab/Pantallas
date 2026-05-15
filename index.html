@@ -3,138 +3,334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agencia COOSAJO - Receptor Nube</title>
+    <title>Agencia COOSAJO - Receptor Broadcast</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #f1f5f9; cursor: none; }
-        .bg-abstract { background-image: url('abstract-white-background-with-elegant-curving-lin-2026-01-07-23-20-12-utc.jpg'); background-size: cover; opacity: 0.6; position: absolute; inset: 0; z-index: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            overflow: hidden; 
+            background-color: #f1f5f9; 
+            margin: 0;
+            cursor: none;
+        }
+
+        /* Fondo decorativo */
+        .bg-abstract { 
+            background-image: url('abstract-white-background-with-elegant-curving-lin-2026-01-07-23-20-12-utc.jpg'); 
+            background-size: cover; 
+            background-position: center; 
+            opacity: 0.6; 
+            position: absolute; 
+            inset: 0; 
+            z-index: 0;
+        }
+
+        /* Animación de marquesina inferior */
         @keyframes scroll-left { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
         .animate-marquee { animation: scroll-left 45s linear infinite; }
-        @keyframes progress { 0% { width: 0%; } 100% { width: 100%; } }
-        .animate-progress { animation: progress 8s linear infinite; }
-        .video-frame { border: 12px solid white; border-radius: 2.5rem; background: #0f172a; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
-        #sidebar { transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); width: 431px; }
-        #sidebar.hidden-sidebar { width: 0; opacity: 0; margin-right: -1.5rem; transform: translateX(-40px); }
+        
+        /* Animación para las barras de progreso superiores */
+        @keyframes progress-fill { 0% { width: 0%; } 100% { width: 100%; } }
+        .animate-progress { animation: progress-fill 8s linear infinite; }
+
+        /* Contenedor de video con bordes redondeados */
+        .video-frame { 
+            border: 12px solid #ffffff; 
+            border-radius: 2.5rem; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            background: #000;
+        }
+
+        /* Transición para ocultar/mostrar el lateral */
+        #sidebar { 
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            width: 431px; 
+        }
+        #sidebar.hidden-sidebar {
+            width: 0;
+            opacity: 0;
+            margin-right: -1.5rem;
+            pointer-events: none;
+            transform: translateX(-40px);
+        }
+
+        .status-badge {
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
     </style>
 </head>
 <body class="w-full h-screen flex flex-col relative" onclick="enableAudio()">
+
     <div class="bg-abstract"></div>
 
+    <!-- Header Institucional -->
     <header class="relative z-50 h-[125px] bg-white border-b-[6px] border-[#158e45] flex items-center justify-between px-10 shadow-lg">
-        <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-20" onerror="this.src='https://placehold.co/200x80?text=COOSAJO'">
+        <div class="flex items-center gap-3">
+            <img src="LOGO COOSAJO SIN ESLOGAN.png" alt="COOSAJO" class="h-20 object-contain" onerror="this.src='https://placehold.co/200x80?text=COOSAJO'">
+        </div>
+
+        <!-- Redes Sociales y Web -->
         <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-5 py-2.5 rounded-2xl">
+            <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-5 py-2.5 rounded-2xl shadow-sm">
                 <img src="LOGO FACEBOOK.png" class="w-5 h-5">
                 <span class="font-bold text-[#172e59] text-sm uppercase">COOSAJO</span>
             </div>
-            <div class="flex items-center gap-2 bg-[#158e45] text-white px-6 py-3 rounded-2xl">
+            <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-5 py-2.5 rounded-2xl shadow-sm">
+                <img src="LOGO INSTA.png" class="w-5 h-5">
+                <span class="font-bold text-[#172e59] text-sm uppercase">@coosajo</span>
+            </div>
+            <div class="flex items-center gap-3 bg-[#158e45] text-white px-6 py-3 rounded-2xl shadow-md border-b-4 border-green-800">
                 <i data-lucide="globe" class="w-5 h-5"></i>
                 <span class="font-black text-sm uppercase tracking-widest">www.coosajo.com</span>
             </div>
         </div>
+
+        <!-- Clima y Reloj -->
         <div class="flex items-center gap-10">
             <div class="flex items-center gap-4 bg-blue-50/50 px-6 py-2 rounded-2xl border border-blue-100">
-                <i data-lucide="cloud-sun" class="w-10 h-10 text-[#172e59]"></i>
+                <div id="weatherIconContainer"><i data-lucide="cloud-sun" class="w-10 h-10 text-[#172e59]"></i></div>
                 <div class="flex flex-col text-right">
-                    <span class="font-black text-3xl text-[#172e59]">24°C</span>
-                    <span class="text-[10px] uppercase font-black text-[#158e45]">Esquipulas</span>
+                    <span id="weatherTemp" class="font-black text-3xl text-[#172e59] leading-none">24°C</span>
+                    <span class="text-[10px] uppercase font-black text-[#158e45] tracking-[0.2em]">Esquipulas</span>
                 </div>
             </div>
             <div class="text-right border-l-[3px] border-slate-100 pl-10">
-                <div id="clock" class="font-black text-4xl text-[#172e59]">--:--</div>
-                <div id="date" class="text-[10px] text-[#158e45] font-black uppercase">Cargando...</div>
+                <div id="clockTime" class="font-black text-4xl text-[#172e59] leading-none tracking-tighter">--:--</div>
+                <div id="clockDate" class="text-[10px] text-[#158e45] font-black uppercase mt-1 tracking-widest">Cargando...</div>
             </div>
         </div>
     </header>
 
     <main class="relative z-10 flex-1 flex gap-6 p-6 min-h-0">
+        <!-- Sidebar Banners con Barras de Progreso -->
         <div id="sidebar" class="h-full relative overflow-hidden video-frame flex-shrink-0 border-none bg-slate-900">
-            <div id="banners" class="absolute inset-0"></div>
-            <div id="progress" class="absolute top-5 left-0 right-0 flex justify-center gap-1.5 z-20 px-6"></div>
+            <div id="bannersContainer" class="absolute inset-0 w-full h-full"></div>
+            <!-- Barras de progreso superiores (8 segmentos) -->
+            <div id="progressContainer" class="absolute top-5 left-0 right-0 flex justify-center gap-1.5 z-20 px-6"></div>
         </div>
 
-        <div class="flex-1 min-w-0 h-full relative overflow-hidden video-frame flex items-center justify-center">
-            <video id="live" class="absolute inset-0 w-full h-full object-contain z-10 opacity-0 transition-opacity" autoplay playsinline></video>
+        <!-- Área de Video Principal -->
+        <div class="flex-1 min-w-0 h-full relative overflow-hidden video-frame flex items-center justify-center bg-black">
+            <!-- Video en Vivo de la Plataforma -->
+            <video id="liveVideo" class="absolute inset-0 w-full h-full object-contain z-10 opacity-0 transition-opacity duration-1000" autoplay playsinline></video>
             
-            <div id="waiting" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-900/40">
-                <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-20 mb-8 opacity-20 grayscale">
+            <!-- Video de Publicidad Local (15 min) -->
+            <video id="adPlayer" class="absolute inset-0 w-full h-full object-contain z-30 hidden bg-black" playsinline></video>
+
+            <!-- Overlay de Sincronización Nube -->
+            <div id="waitingUI" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-900/40">
+                <div class="flex items-center gap-3 mb-8 opacity-20">
+                    <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-24 grayscale">
+                </div>
+                
                 <h2 class="text-4xl font-black uppercase tracking-[0.4em] text-slate-300 mb-8 italic">Buscando Señal Nube...</h2>
-                <p id="netStatus" class="text-[#158e45] font-bold text-xs uppercase animate-pulse">Plataforma COOSAJO Activa</p>
+                
+                <div class="status-badge px-8 py-3 rounded-2xl">
+                    <p id="netStatus" class="text-slate-400 font-bold text-xs uppercase tracking-widest animate-pulse">Sincronización Automática Activa</p>
+                </div>
+                
+                <p class="mt-16 text-[10px] text-blue-400/60 font-black uppercase tracking-[0.3em]">Haga clic en la pantalla para activar el audio</p>
+            </div>
+
+            <!-- UI de Transmisión Activa -->
+            <div id="streamHUD" class="absolute inset-0 z-25 pointer-events-none p-8 flex flex-col justify-between opacity-0 transition-opacity">
+                <div class="flex justify-between items-start">
+                    <div class="bg-white/95 rounded-2xl px-6 py-4 border-l-8 border-red-500 flex items-center gap-4 shadow-2xl">
+                        <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                        <span class="text-[#172e59] font-black uppercase tracking-tighter text-xl italic">EN DIRECTO</span>
+                    </div>
+                    <div class="bg-[#158e45] text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-5 border-b-4 border-green-900">
+                        <i data-lucide="tv" class="w-8 h-8"></i>
+                        <div class="flex flex-col">
+                            <span class="text-[11px] uppercase font-black opacity-80 leading-none">Corte Ads en:</span>
+                            <span id="countdown" class="font-mono text-3xl font-black">15:00</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
 
-    <footer class="relative z-50 h-[85px] bg-[#172e59] text-white flex items-center overflow-hidden border-t-4 border-white/5">
+    <!-- Footer de Noticias COOSAJO -->
+    <footer class="relative z-50 h-[85px] bg-[#172e59] text-white flex items-center overflow-hidden border-t-4 border-white/5 shadow-2xl">
         <div class="absolute left-0 top-0 bottom-0 z-20 bg-[#158e45] flex items-center px-10">
             <span class="font-black text-2xl uppercase tracking-tighter italic">NOTICIAS COOSAJO</span>
         </div>
         <div class="whitespace-nowrap animate-marquee flex items-center gap-24 text-2xl font-bold ml-[350px]">
-            <span>✨ ¡Ahorrar tiene premio! Magicuenta de <strong class="text-yellow-400">Q50</strong>.</span>
-            <span>🚀 Impulsa tu negocio con COOSAJO. Tu futuro empieza hoy.</span>
+            <span>✨ ¡Ahorrar tiene premio! Por cada depósito de <strong class="text-yellow-400 text-4xl font-black">Q50</strong> en tu Magicuenta, llévate tus estampitas.</span>
+            <span>🚀 Impulsa tu negocio con un crédito diseñado para que sigas creciendo al ritmo que quieres.</span>
+            <span>🛡️ Cuidamos tu ahorro con el respeto que vos le tenés. ¡COOSAJO es tu casa!</span>
         </div>
     </footer>
 
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
         import { getFirestore, doc, onSnapshot, setDoc, deleteDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
-        import { getAuth, signInAnonymously } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getAuth, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
 
         lucide.createIcons();
+
+        // 1. Configuración de Plataforma (Firebase)
         const firebaseConfig = JSON.parse(__firebase_config);
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-coosajo';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'coosajo-broadcast-system';
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const auth = getAuth(app);
 
-        const live = document.getElementById('live');
-        const screenId = 'SCREEN-' + Math.random().toString(36).substring(7).toUpperCase();
+        const liveVideo = document.getElementById('liveVideo');
+        const adPlayer = document.getElementById('adPlayer');
+        const sidebar = document.getElementById('sidebar');
+        const countdownEl = document.getElementById('countdown');
+        const screenId = 'AGENCIA-' + Math.floor(Math.random() * 10000);
+        
         let peer = null;
+        let cycleInterval = null;
+        let user = null;
+        let currentStatus = 'waiting';
 
+        // 2. Inicialización de Pantalla y Registro
         const init = async () => {
-            await signInAnonymously(auth);
-            // Registrar pantalla en Firebase
-            const screenRef = doc(db, 'artifacts', appId, 'public', 'data', 'screens', screenId);
-            await setDoc(screenRef, { name: 'Agencia Esquipulas', lastSeen: Date.now() });
-            window.addEventListener('beforeunload', () => deleteDoc(screenRef));
+            try {
+                // Autenticación anónima obligatoria (Regla 3)
+                await signInAnonymously(auth);
+                onAuthStateChanged(auth, async (u) => {
+                    user = u;
+                    if (u) {
+                        // Registrar esta pantalla en la lista de "Agencias en Línea" (Regla 1)
+                        const screenRef = doc(db, 'artifacts', appId, 'public', 'data', 'screens', screenId);
+                        await setDoc(screenRef, { 
+                            id: screenId, 
+                            name: 'Agencia Esquipulas', 
+                            lastSeen: Date.now() 
+                        });
+                        window.addEventListener('beforeunload', () => deleteDoc(screenRef));
 
+                        iniciarPeer();
+                        escucharMesaMaestra();
+                    }
+                });
+            } catch (e) { console.error("Error inicializando receptor:", e); }
+        };
+
+        const iniciarPeer = () => {
             peer = new Peer(screenId);
-            
-            // Escuchar el estado de la plataforma en Firebase
+            peer.on('error', () => setTimeout(iniciarPeer, 5000));
+        };
+
+        // 3. Escuchar las órdenes de la Mesa Maestra via Firebase
+        const escucharMesaMaestra = () => {
+            if (!user) return;
+            // Regla 1: Ruta estricta de estado
             onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'platformState'), (snapshot) => {
                 const state = snapshot.data();
                 if (state && state.isLive) {
-                    const call = peer.call(state.masterId, new MediaStream());
-                    call.on('stream', (stream) => {
-                        live.srcObject = stream;
-                        live.style.opacity = "1";
-                        document.getElementById('waiting').classList.add('hidden');
-                        document.getElementById('sidebar').classList.add('hidden-sidebar');
-                    });
+                    activarTransmision(state);
                 } else {
-                    location.reload();
+                    finalizarTodo();
                 }
             });
         };
 
-        // Reloj e Interfaz
+        const activarTransmision = (state) => {
+            if (currentStatus === 'live') return;
+            currentStatus = 'live';
+
+            // Llamamos al Master para obtener el flujo de video
+            const call = peer.call(state.masterId, new MediaStream());
+            call.on('stream', (stream) => {
+                liveVideo.srcObject = stream;
+                liveVideo.style.opacity = "1";
+                document.getElementById('waitingUI').classList.add('hidden');
+                document.getElementById('streamHUD').classList.remove('opacity-0');
+                sidebar.classList.add('hidden-sidebar');
+                
+                // Sincronización de tiempo (Calculamos cuánto ha pasado desde que el Master inició)
+                const elapsedSeconds = Math.floor((Date.now() - state.startTime) / 1000);
+                const remainingSeconds = (state.matchDuration * 60) - elapsedSeconds;
+                
+                startTimer(remainingSeconds > 0 ? remainingSeconds : state.matchDuration * 60);
+            });
+        };
+
+        const startTimer = (seconds) => {
+            let timer = seconds;
+            if (cycleInterval) clearInterval(cycleInterval);
+            cycleInterval = setInterval(() => {
+                timer--;
+                const m = Math.floor(timer / 60);
+                const s = timer % 60;
+                countdownEl.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                
+                if (timer <= 0) {
+                    clearInterval(cycleInterval);
+                    iniciarPublicidad();
+                }
+            }, 1000);
+        };
+
+        const iniciarPublicidad = () => {
+            sidebar.classList.remove('hidden-sidebar');
+            liveVideo.style.opacity = "0";
+            liveVideo.muted = true;
+            
+            let currentAd = 1;
+            const playNextAd = () => {
+                if (currentAd <= 3) {
+                    adPlayer.classList.remove('hidden');
+                    adPlayer.src = `videos/publicidad_${currentAd}.mp4`;
+                    adPlayer.play().catch(() => next());
+                    adPlayer.onended = next;
+                } else {
+                    terminarPublicidad();
+                }
+            };
+            const next = () => { currentAd++; playNextAd(); };
+            playNextAd();
+        };
+
+        const terminarPublicidad = () => {
+            adPlayer.classList.add('hidden');
+            liveVideo.style.opacity = "1";
+            liveVideo.muted = false;
+            sidebar.classList.add('hidden-sidebar');
+            startTimer(15 * 60); // Reinicia ciclo estándar
+        };
+
+        const finalizarTodo = () => {
+            if (currentStatus === 'waiting') return;
+            currentStatus = 'waiting';
+            clearInterval(cycleInterval);
+            liveVideo.srcObject = null;
+            liveVideo.style.opacity = "0";
+            document.getElementById('waitingUI').classList.remove('hidden');
+            document.getElementById('streamHUD').classList.add('opacity-0');
+            sidebar.classList.remove('hidden-sidebar');
+            adPlayer.classList.add('hidden');
+        };
+
+        // 4. Reloj, Clima y Banners Visuales
         setInterval(() => {
             const now = new Date();
-            document.getElementById('clock').textContent = now.toLocaleTimeString('es-GT', {hour:'2-digit', minute:'2-digit', hour12: true});
-            document.getElementById('date').textContent = now.toLocaleDateString('es-GT', {weekday:'long', day:'numeric', month:'long'}).toUpperCase();
+            document.getElementById('clockTime').textContent = now.toLocaleTimeString('es-GT', {hour:'2-digit', minute:'2-digit', hour12: true});
+            document.getElementById('clockDate').textContent = now.toLocaleDateString('es-GT', {weekday:'long', day:'numeric', month:'long'}).toUpperCase();
         }, 1000);
 
         function initBanners() {
-            const container = document.getElementById('banners');
-            const progress = document.getElementById('progress');
+            const container = document.getElementById('bannersContainer');
+            const progress = document.getElementById('progressContainer');
             for(let i=1; i<=8; i++) {
-                const b = document.createElement('img');
-                b.src = `Lateral ${i}.png`;
-                b.className = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i===1?'opacity-100 z-10':'opacity-0 z-0'}`;
-                b.id = `b-${i}`;
-                container.appendChild(b);
+                const img = document.createElement('img');
+                img.src = `Lateral ${i}.png`;
+                img.className = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i===1?'opacity-100 z-10':'opacity-0 z-0'}`;
+                img.id = `b-${i}`;
+                img.onerror = () => img.src = `https://placehold.co/431x800/172e59/ffffff?text=Lateral+${i}`;
+                container.appendChild(img);
 
                 const p = document.createElement('div');
                 p.className = "h-1 flex-1 bg-white/20 rounded-full overflow-hidden";
@@ -148,14 +344,14 @@
                 cur = cur % 8 + 1;
                 document.getElementById(`b-${cur}`).style.opacity = 1;
                 document.getElementById(`p-${cur}`).className = "h-full bg-[#158e45] w-full animate-progress";
-                if(cur === 1) for(let i=2; i<=8; i++) document.getElementById(`p-${i}`).className = "h-full bg-[#158e45] w-full opacity-0";
+                if(cur === 1) {
+                    for(let i=2; i<=8; i++) document.getElementById(`p-${i}`).className = "h-full bg-[#158e45] w-full opacity-0";
+                }
             }, 8000);
         }
 
-        window.enableAudio = () => { live.muted = false; live.play().catch(()=>{}); };
+        window.enableAudio = () => { liveVideo.muted = false; adPlayer.muted = false; };
         init(); initBanners();
     </script>
 </body>
 </html>
-
-```
