@@ -3,137 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pantalla Agencia COOSAJO</title>
+    <title>Pantalla Agencia COOSAJO - Automática</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #f1f5f9; margin: 0; }
+        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #f8fafc; margin: 0; }
         
         .bg-custom { 
             background-image: url('abstract-white-background-with-elegant-curving-lin-2026-01-07-23-20-12-utc.jpg'); 
-            background-size: cover; 
-            opacity: 0.6; 
+            background-size: cover; background-position: center; opacity: 0.6; position: absolute; inset: 0; z-index: 0;
         }
-        .animate-marquee { animation: scroll-left 40s linear infinite; }
+        .animate-marquee { animation: scroll-left 45s linear infinite; }
         @keyframes scroll-left { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
         
         .video-container { 
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); 
-            border: 8px solid #ffffff; 
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.4); 
+            border: 10px solid #ffffff; 
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
+
+        #sidebar { 
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
+            width: 431px; opacity: 1; transform: translateX(0);
+        }
+        #sidebar.hidden-sidebar { 
+            width: 0; opacity: 0; margin-right: -1.5rem; pointer-events: none; transform: translateX(-40px);
         }
         .animate-progress { animation: progress-bar 8s linear infinite; }
         @keyframes progress-bar { 0% { width: 0%; } 100% { width: 100%; } }
-
-        #sidebar { 
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); 
-            width: 431px; 
-            opacity: 1; 
-            overflow: hidden; 
-        }
-        #sidebar.hidden-sidebar { 
-            width: 0; 
-            opacity: 0; 
-            margin-right: -1.5rem; 
-            pointer-events: none;
-            transform: translateX(-20px);
-        }
-        
-        /* Mute overlay hint (discreto) */
-        #muteHint {
-            pointer-events: none;
-            transition: opacity 0.5s;
-        }
     </style>
 </head>
-<body class="w-full h-screen flex flex-col relative" onclick="enableAudio()">
+<body class="w-full h-screen flex flex-col relative">
 
-    <div class="absolute inset-0 z-0 bg-custom"></div>
+    <div class="bg-custom"></div>
 
-    <header class="relative z-50 h-[120px] bg-white shadow-lg flex items-center justify-between px-10 border-b-[6px] border-[#158e45]">
-        <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-20" onerror="this.style.display='none'">
+    <header class="relative z-50 h-[125px] bg-white/95 backdrop-blur-md shadow-xl flex items-center justify-between px-12 border-b-[6px] border-[#158e45]">
+        <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-24" onerror="this.src='https://placehold.co/200x80?text=COOSAJO'">
         
-        <!-- Redes y Web SIEMPRE VISIBLES -->
-        <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 shadow-sm">
-                <img src="LOGO FACEBOOK.png" class="w-5 h-5" onerror="this.style.display='none'">
-                <span class="font-bold text-[#172e59]">COOSAJO</span>
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-3 bg-slate-50 border border-slate-100 px-5 py-3 rounded-2xl shadow-sm">
+                <img src="LOGO FACEBOOK.png" class="w-6 h-6 object-contain">
+                <span class="font-black text-[#172e59] text-lg uppercase tracking-tighter">COOSAJO</span>
             </div>
-            <div class="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 shadow-sm">
-                <img src="LOGO INSTA.png" class="w-5 h-5" onerror="this.style.display='none'">
-                <span class="font-bold text-[#172e59]">@coosajo</span>
+            <div class="flex items-center gap-3 bg-slate-50 border border-slate-100 px-5 py-3 rounded-2xl shadow-sm">
+                <img src="LOGO INSTA.png" class="w-6 h-6 object-contain">
+                <span class="font-black text-[#172e59] text-lg uppercase tracking-tighter">@coosajo</span>
             </div>
-            <div class="flex items-center gap-2 bg-[#158e45] text-white px-5 py-2.5 rounded-xl shadow-md border-b-2 border-green-700">
-                <i data-lucide="globe" class="w-5 h-5"></i>
-                <span class="font-black uppercase tracking-tight">www.coosajo.com</span>
+            <div class="flex items-center gap-4 bg-[#158e45] text-white px-6 py-3.5 rounded-2xl shadow-lg border-b-4 border-green-800">
+                <i data-lucide="globe" class="w-6 h-6"></i>
+                <span class="font-black text-lg uppercase tracking-widest">www.coosajo.com</span>
             </div>
         </div>
 
-        <div class="flex items-center gap-8">
-            <div class="flex items-center gap-4 bg-blue-50/50 px-5 py-2 rounded-2xl border border-blue-100">
-                <div id="weatherIconContainer"><i data-lucide="cloud-sun" class="w-8 h-8 text-[#172e59]"></i></div>
-                <div class="flex flex-col">
-                    <span id="weatherTemp" class="font-black text-2xl text-[#172e59]">--°C</span>
-                    <span class="text-[10px] uppercase font-bold text-[#158e45]">Esquipulas</span>
+        <div class="flex items-center gap-10">
+            <div class="flex items-center gap-4 bg-blue-50/50 px-6 py-2.5 rounded-2xl border border-blue-100">
+                <div id="weatherIconContainer"><i data-lucide="cloud-sun" class="w-10 h-10 text-[#172e59]"></i></div>
+                <div class="flex flex-col text-right">
+                    <span id="weatherTemp" class="font-black text-3xl text-[#172e59] leading-none">24°C</span>
+                    <span class="text-[11px] uppercase font-black text-[#158e45] tracking-[0.2em]">Esquipulas</span>
                 </div>
             </div>
-            <div class="text-right">
-                <div id="clockTime" class="font-black text-3xl text-[#172e59]">--:--</div>
-                <div id="clockDate" class="text-[10px] text-[#158e45] font-black uppercase">Cargando...</div>
+            <div class="text-right border-l-[3px] border-slate-100 pl-10">
+                <div id="clockTime" class="font-black text-4xl text-[#172e59] leading-none tracking-tighter">--:--</div>
+                <div id="clockDate" class="text-[11px] text-[#158e45] font-black uppercase mt-1 tracking-widest">Cargando...</div>
             </div>
         </div>
     </header>
 
-    <main class="relative z-10 flex-1 flex gap-6 p-6 min-h-0 bg-transparent">
-        <!-- Sidebar Dinámico -->
-        <div id="sidebar" class="h-full relative rounded-[2rem] overflow-hidden video-container bg-slate-900 flex-shrink-0">
+    <main class="relative z-10 flex-1 flex gap-6 p-6 min-h-0">
+        <div id="sidebar" class="h-full relative rounded-[2.5rem] overflow-hidden video-container bg-slate-900 flex-shrink-0">
             <div id="bannersContainer" class="absolute inset-0 w-full h-full"></div>
             <div id="progressContainer" class="absolute top-6 left-0 right-0 flex justify-center gap-2 z-20 px-8"></div>
         </div>
 
-        <!-- Contenedor de Video Principal -->
-        <div class="flex-1 min-w-0 h-full relative rounded-[2rem] overflow-hidden video-container bg-black flex items-center justify-center">
-            <!-- Video de OBS (Inicia Muted para permitir autoplay) -->
-            <video id="liveVideo" class="absolute inset-0 w-full h-full object-contain z-10" autoplay muted playsinline></video>
-            
-            <!-- Video de Publicidad Local -->
+        <div class="flex-1 min-w-0 h-full relative rounded-[2.5rem] overflow-hidden video-container bg-black flex items-center justify-center">
+            <video id="liveVideo" class="absolute inset-0 w-full h-full object-contain z-10" autoplay playsinline></video>
             <video id="adPlayer" class="absolute inset-0 w-full h-full object-contain z-30 hidden bg-black" playsinline></video>
 
             <div id="streamUI" class="absolute inset-0 z-20 pointer-events-none p-8 flex flex-col justify-between opacity-0 transition-opacity">
                 <div class="flex justify-between items-start">
-                    <div class="bg-white/90 backdrop-blur rounded-2xl px-5 py-3 border-l-4 border-red-500 flex items-center gap-3 shadow-xl">
-                        <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                        <span class="font-black text-[#172e59] uppercase tracking-tighter text-xl">Señal en Vivo</span>
+                    <div class="bg-white/90 backdrop-blur-md rounded-2xl px-6 py-4 border-l-8 border-red-500 flex items-center gap-4 shadow-2xl">
+                        <div class="w-4 h-4 bg-red-500 rounded-full animate-pulse"></div>
+                        <span class="font-black text-[#172e59] uppercase tracking-tighter text-2xl">Señal en Vivo</span>
                     </div>
-                    <div class="bg-[#158e45] text-white px-6 py-3 rounded-2xl shadow-xl flex items-center gap-4 border-b-4 border-green-700">
-                        <i data-lucide="tv" class="w-6 h-6"></i>
+                    <div class="bg-[#158e45] text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-5 border-b-4 border-green-900">
+                        <i data-lucide="tv" class="w-8 h-8"></i>
                         <div class="flex flex-col">
-                            <span class="text-[10px] uppercase font-black opacity-80 leading-none">Publicidad en:</span>
-                            <span id="countdown" class="font-mono text-2xl font-black">15:00</span>
+                            <span class="text-[11px] uppercase font-black opacity-80 leading-none tracking-widest">Siguiente corte en:</span>
+                            <span id="countdown" class="font-mono text-3xl font-black">15:00</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Hint de Audio -->
-            <div id="muteHint" class="absolute bottom-10 z-40 bg-black/60 text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest animate-bounce">
-                Haga clic en la pantalla para activar sonido
+            <div id="waitingMsg" class="absolute inset-0 z-40 bg-slate-900 flex flex-col items-center justify-center text-white p-12 text-center">
+                <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-20 mb-8 opacity-20">
+                <h2 class="text-3xl font-black uppercase tracking-widest text-slate-500">Buscando Señal Maestra...</h2>
+                <p id="errorNote" class="text-slate-600 mt-4 text-xs font-bold uppercase max-w-md">
+                    Nota: En este entorno (Canvas), los WebSockets están bloqueados. Use el botón de prueba para simular la estética.
+                </p>
+                
+                <button onclick="testLocalMode()" class="mt-8 bg-[#158e45] hover:bg-green-600 px-8 py-4 rounded-2xl font-black uppercase tracking-widest transition-all hover:scale-105 shadow-2xl flex items-center gap-4">
+                    <i data-lucide="play" class="w-6 h-6"></i>
+                    MODO PRUEBA LOCAL (CANVAS)
+                </button>
             </div>
-
-            <!-- Estado de conexión (Casi invisible, técnico) -->
-            <div id="statusInfo" class="absolute bottom-4 right-4 z-50 text-[10px] text-white/20 font-mono uppercase">Buscando Mesa Maestra...</div>
         </div>
     </main>
 
-    <footer class="relative z-50 h-[80px] bg-[#172e59] text-white flex items-center overflow-hidden">
-        <div class="absolute left-0 top-0 bottom-0 z-20 bg-[#158e45] flex items-center px-8 shadow-2xl">
-            <span class="font-black text-xl uppercase tracking-tighter italic">Noticias COOSAJO</span>
+    <footer class="relative z-50 h-[85px] bg-[#172e59] text-white flex items-center overflow-hidden border-t-4 border-white/5">
+        <div class="absolute left-0 top-0 bottom-0 z-20 bg-[#158e45] flex items-center px-10 shadow-2xl">
+            <span class="font-black text-2xl uppercase tracking-tighter italic">Noticias COOSAJO</span>
         </div>
-        <div class="whitespace-nowrap animate-marquee flex items-center gap-20 text-xl font-bold ml-[300px]">
-            <span>✨ ¡Ahorrar tiene premio! Por cada depósito de <strong class="text-yellow-400 text-3xl font-black italic">Q50</strong> en tu Magicuenta.</span>
-            <span>🏠 Tu esfuerzo diario es el futuro de los que más quieres.</span>
+        <div class="whitespace-nowrap animate-marquee flex items-center gap-24 text-2xl font-bold ml-[350px]">
+            <span>✨ ¡Ahorrar tiene premio! Por cada depósito de <strong class="text-yellow-400 text-4xl font-black italic">Q50</strong> en tu Magicuenta.</span>
             <span>🚀 Impulsa tu negocio con un crédito diseñado para que sigas creciendo.</span>
         </div>
     </footer>
@@ -143,108 +128,85 @@
         const liveVideo = document.getElementById('liveVideo');
         const adPlayer = document.getElementById('adPlayer');
         const sidebar = document.getElementById('sidebar');
-        const statusInfo = document.getElementById('statusInfo');
-        const muteHint = document.getElementById('muteHint');
         let timerValue = 15 * 60;
         let peer;
         let connectionActive = false;
 
-        function enableAudio() {
-            liveVideo.muted = false;
-            liveVideo.volume = 1.0;
-            adPlayer.muted = false;
-            adPlayer.volume = 1.0;
-            muteHint.style.opacity = '0';
+        function forceVolume() {
+            liveVideo.volume = 1.0; liveVideo.muted = false;
+            adPlayer.volume = 1.0; adPlayer.muted = false;
         }
 
-        function connectToMaster() {
+        // Intento de conexión con PeerJS (Funcionará fuera del Canvas)
+        function connect() {
             if (connectionActive) return;
-            
-            if (!peer || peer.destroyed) {
-                peer = new Peer();
-            }
-
-            peer.on('open', (id) => {
-                statusInfo.textContent = "Buscando Mesa Maestra...";
-                
-                // Intentamos llamar a la mesa maestra (ID Fijo)
-                const call = peer.call('COOSAJO-MASTER-MAGIC', new MediaStream());
-                
-                call.on('stream', (stream) => {
-                    handleIncomingStream(stream);
+            try {
+                if (!peer || peer.destroyed) peer = new Peer();
+                peer.on('open', () => {
+                    const call = peer.call('COOSAJO-MASTER-MAGIC', new MediaStream());
+                    call.on('stream', (stream) => {
+                        handleStreamStart(stream);
+                    });
                 });
-
-                call.on('error', (err) => {
-                    console.log("Mesa fuera de línea, reintentando...");
-                    connectionActive = false;
-                });
-            });
-
-            peer.on('error', (err) => {
-                statusInfo.textContent = "Error de Red: Buscando...";
-            });
+                peer.on('error', () => { connectionActive = false; });
+            } catch (e) { console.log("Red restringida (Canvas)"); }
         }
 
-        // Reintento cada 10 segundos si no hay conexión
-        setInterval(() => {
-            if (!connectionActive) connectToMaster();
-        }, 10000);
-        connectToMaster();
-
-        function handleIncomingStream(stream) {
+        function handleStreamStart(stream) {
             liveVideo.srcObject = stream;
             connectionActive = true;
-            statusInfo.textContent = "SINTONIZADO";
             document.getElementById('streamUI').classList.remove('opacity-0');
-            
-            // Al recibir señal, ocultamos laterales para el partido
+            document.getElementById('waitingMsg').classList.add('hidden');
             sidebar.classList.add('hidden-sidebar');
+            forceVolume();
             startCycle();
         }
 
+        // Función para probar aquí en el chat sin errores de WebSocket
+        async function testLocalMode() {
+            try {
+                const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
+                handleStreamStart(stream);
+            } catch (e) { 
+                // Error silencioso si cancela
+            }
+        }
+
+        setInterval(connect, 5000);
+
         function startCycle() {
-            const timerId = setInterval(() => {
+            const t = setInterval(() => {
+                if (!connectionActive) { clearInterval(t); return; }
                 timerValue--;
                 const m = Math.floor(timerValue / 60);
                 const s = timerValue % 60;
-                document.getElementById('countdown').textContent = `${m}:${s.toString().padStart(2, '0')}`;
-
-                if (timerValue <= 0) {
-                    clearInterval(timerId);
-                    lanzarAds();
-                }
+                document.getElementById('countdown').textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                if (timerValue <= 0) { clearInterval(t); lanzarAds(); }
             }, 1000);
         }
 
         function lanzarAds() {
             sidebar.classList.remove('hidden-sidebar');
             liveVideo.style.opacity = "0";
-            let adIndex = 1;
-            
-            const playAd = () => {
-                if(adIndex <= 3) {
+            let idx = 1;
+            const play = () => {
+                if (idx <= 3) {
                     adPlayer.classList.remove('hidden');
-                    adPlayer.src = `videos/publicidad_${adIndex}.mp4`;
-                    adPlayer.volume = 1.0;
+                    adPlayer.src = `videos/publicidad_${idx}.mp4`;
+                    forceVolume();
                     adPlayer.play().catch(next);
                     adPlayer.onended = next;
-                } else {
-                    finishAds();
-                }
+                } else { finAds(); }
             };
-
-            const next = () => {
-                adIndex++;
-                playAd();
-            };
-
-            playAd();
+            const next = () => { idx++; play(); };
+            play();
         }
 
-        function finishAds() {
+        function finAds() {
             adPlayer.classList.add('hidden');
             sidebar.classList.add('hidden-sidebar');
             liveVideo.style.opacity = "1";
+            forceVolume();
             timerValue = 15 * 60;
             startCycle();
         }
@@ -254,15 +216,6 @@
             document.getElementById('clockTime').textContent = now.toLocaleTimeString('es-GT', {hour:'2-digit', minute:'2-digit', hour12: true});
             document.getElementById('clockDate').textContent = now.toLocaleDateString('es-GT', {weekday:'long', day:'numeric', month:'long'});
         }, 1000);
-
-        async function fetchWeather() {
-            try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.5667&longitude=-89.35&current=temperature_2m');
-                const data = await res.json();
-                document.getElementById('weatherTemp').textContent = `${Math.round(data.current.temperature_2m)}°C`;
-            } catch (e) { document.getElementById('weatherTemp').textContent = '24°C'; }
-        }
-        fetchWeather();
 
         function initBanners() {
             const container = document.getElementById('bannersContainer');
@@ -283,6 +236,8 @@
             document.getElementById('b-1').style.opacity = 1;
         }
         initBanners();
+
+        document.body.addEventListener('click', () => { forceVolume(); }, { once: true });
     </script>
 </body>
 </html>
