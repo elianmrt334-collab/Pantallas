@@ -6,270 +6,139 @@
     <title>Transmisión Profesional COOSAJO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            overflow: hidden; 
-            background-color: #f1f5f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        .bg-custom {
-            background-image: url('abstract-white-background-with-elegant-curving-lin-2026-01-07-23-20-12-utc.jpg');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.6;
-        }
-        
+        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #f1f5f9; margin: 0; }
+        .bg-custom { background-image: url('abstract-white-background-with-elegant-curving-lin-2026-01-07-23-20-12-utc.jpg'); background-size: cover; opacity: 0.6; }
         .animate-marquee { animation: scroll-left 40s linear infinite; }
         @keyframes scroll-left { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
-        
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .video-container {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
-            border: 8px solid #ffffff;
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .status-pulse { animation: pulse-red 2s infinite; }
-        @keyframes pulse-red {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-        }
-        
+        .video-container { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); border: 8px solid #ffffff; transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
         .animate-progress { animation: progress-bar 8s linear infinite; }
         @keyframes progress-bar { 0% { width: 0%; } 100% { width: 100%; } }
-
-        /* Transición suave para el sidebar */
-        #sidebar {
-            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 431px;
-            opacity: 1;
-            transform: translateX(0);
-        }
-        #sidebar.hidden-sidebar {
-            width: 0;
-            opacity: 0;
-            transform: translateX(-50px);
-            margin-right: -1.5rem; /* Compensa el gap-6 del flex */
-            pointer-events: none;
-        }
+        #sidebar { transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); width: 431px; opacity: 1; }
+        #sidebar.hidden-sidebar { width: 0; opacity: 0; margin-right: -1.5rem; pointer-events: none; transform: translateX(-20px); }
     </style>
 </head>
 <body class="w-full h-screen flex flex-col relative">
 
-    <!-- Fondo original -->
     <div class="absolute inset-0 z-0 bg-custom"></div>
 
     <header class="relative z-50 h-[120px] bg-white shadow-lg flex items-center justify-between px-10 border-b-[6px] border-[#158e45]">
-        <div class="flex items-center">
-            <img src="LOGO COOSAJO SIN ESLOGAN.png" alt="Logo COOSAJO" class="h-20 w-auto object-contain" onerror="this.src='https://placehold.co/200x80?text=COOSAJO'" />
-        </div>
-
-        <!-- Sección de Redes y Web (Siempre Visible) -->
+        <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-20" onerror="this.style.display='none'">
+        
         <div class="flex items-center gap-4">
-            <div class="flex items-center gap-3 bg-slate-50 border border-slate-100 px-5 py-2.5 rounded-2xl shadow-sm">
-                <img src="LOGO FACEBOOK.png" class="w-6 h-6 object-contain" />
-                <span class="font-bold text-[#172e59] text-base">COOSAJO</span>
+            <div class="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 shadow-sm">
+                <img src="LOGO FACEBOOK.png" class="w-5 h-5" onerror="this.style.display='none'">
+                <span class="font-bold text-[#172e59]">COOSAJO</span>
             </div>
-            <div class="flex items-center gap-3 bg-slate-50 border border-slate-100 px-5 py-2.5 rounded-2xl shadow-sm">
-                <img src="LOGO INSTA.png" class="w-6 h-6 object-contain" />
-                <span class="font-bold text-[#172e59] text-base">@coosajo</span>
+            <div class="flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 shadow-sm">
+                <img src="LOGO INSTA.png" class="w-5 h-5" onerror="this.style.display='none'">
+                <span class="font-bold text-[#172e59]">@coosajo</span>
             </div>
-            <div class="flex items-center gap-3 bg-[#158e45] text-white px-5 py-2.5 rounded-2xl shadow-md border-b-2 border-green-700">
+            <div class="flex items-center gap-2 bg-[#158e45] text-white px-5 py-2.5 rounded-xl shadow-md">
                 <i data-lucide="globe" class="w-5 h-5"></i>
-                <span class="font-black text-base uppercase tracking-tight">www.coosajo.com</span>
+                <span class="font-black uppercase tracking-tight">www.coosajo.com</span>
             </div>
         </div>
 
-        <!-- Sección de Clima y Reloj -->
         <div class="flex items-center gap-8">
             <div class="flex items-center gap-4 bg-blue-50/50 px-5 py-2 rounded-2xl border border-blue-100">
-                <div id="weatherIconContainer" class="text-[#172e59]">
-                    <i data-lucide="cloud-sun" class="w-8 h-8"></i>
-                </div>
+                <div id="weatherIconContainer"><i data-lucide="cloud-sun" class="w-8 h-8 text-[#172e59]"></i></div>
                 <div class="flex flex-col">
-                    <span id="weatherTemp" class="font-black text-2xl text-[#172e59] leading-none">--°C</span>
-                    <span class="text-[10px] uppercase font-bold text-[#158e45] tracking-tighter">Esquipulas</span>
+                    <span id="weatherTemp" class="font-black text-2xl text-[#172e59]">--°C</span>
+                    <span class="text-[10px] uppercase font-bold text-[#158e45]">Esquipulas</span>
                 </div>
             </div>
-            <div class="h-12 w-px bg-slate-200"></div>
             <div class="text-right">
-                <div id="clockTime" class="font-black text-3xl text-[#172e59] leading-none tracking-tighter">--:--</div>
-                <div id="clockDate" class="text-[10px] text-[#158e45] font-black uppercase mt-1">Cargando...</div>
+                <div id="clockTime" class="font-black text-3xl text-[#172e59]">--:--</div>
+                <div id="clockDate" class="text-[10px] text-[#158e45] font-black uppercase">Cargando...</div>
             </div>
         </div>
     </header>
 
     <main class="relative z-10 flex-1 flex gap-6 p-6 min-h-0 bg-transparent">
-        <!-- Banners Laterales (Aparecen solo en Publicidad) -->
         <div id="sidebar" class="h-full relative rounded-[2rem] overflow-hidden video-container bg-slate-900 flex-shrink-0">
             <div id="bannersContainer" class="absolute inset-0 w-full h-full"></div>
             <div id="progressContainer" class="absolute top-6 left-0 right-0 flex justify-center gap-2 z-20 px-8"></div>
         </div>
 
-        <!-- Área de Transmisión -->
         <div class="flex-1 min-w-0 h-full relative rounded-[2rem] overflow-hidden video-container bg-black flex items-center justify-center">
-            
-            <!-- Video en Vivo de OBS -->
             <video id="liveVideo" class="absolute inset-0 w-full h-full object-contain z-10" autoplay playsinline></video>
-            
-            <!-- Reproductor de Publicidad -->
             <video id="adPlayer" class="absolute inset-0 w-full h-full object-contain z-30 hidden bg-black" playsinline></video>
 
-            <!-- Overlay de Información Superior -->
-            <div id="streamUI" class="absolute inset-0 z-20 pointer-events-none p-8 flex flex-col justify-between opacity-0 transition-opacity duration-700">
+            <div id="connectionStatus" class="absolute inset-0 z-40 bg-[#172e59] flex flex-col items-center justify-center text-white text-center p-10">
+                <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-20 mb-6 animate-pulse">
+                <h2 class="text-3xl font-black uppercase tracking-tighter mb-2">Buscando Señal Maestra...</h2>
+                <p class="text-blue-200 text-sm opacity-60">Conexión automática en curso con El Magic</p>
+            </div>
+
+            <div id="streamUI" class="absolute inset-0 z-20 pointer-events-none p-8 flex flex-col justify-between opacity-0 transition-opacity">
                 <div class="flex justify-between items-start">
-                    <div id="liveBadge" class="glass-panel rounded-2xl px-5 py-3 flex items-center gap-4 border-l-4 border-red-500">
-                        <div class="w-3 h-3 bg-red-500 rounded-full status-pulse"></div>
-                        <div class="flex flex-col text-[#172e59]">
-                            <span class="text-[10px] uppercase font-black tracking-widest opacity-70">En Directo</span>
-                            <span class="font-black text-xl tracking-tighter">SEÑAL DE PARTIDO</span>
-                        </div>
+                    <div class="bg-white/90 backdrop-blur rounded-2xl px-5 py-3 border-l-4 border-red-500 flex items-center gap-3 shadow-xl">
+                        <div class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+                        <span class="font-black text-[#172e59] uppercase tracking-tighter">Señal en Vivo</span>
                     </div>
-                    
-                    <div id="adCounter" class="bg-[#158e45] text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-4 border-b-4 border-green-700">
+                    <div class="bg-[#158e45] text-white px-6 py-3 rounded-2xl shadow-xl flex items-center gap-4">
                         <i data-lucide="tv" class="w-6 h-6"></i>
                         <div class="flex flex-col">
-                            <span class="text-[10px] uppercase font-black opacity-80 leading-none">Corte publicitario en:</span>
-                            <span id="countdown" class="font-mono text-2xl font-black leading-none">15:00</span>
+                            <span class="text-[10px] uppercase font-black opacity-80">Publicidad en:</span>
+                            <span id="countdown" class="font-mono text-2xl font-black">15:00</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Panel de Configuración Inicial -->
-            <div id="setupPanel" class="absolute inset-0 z-50 bg-[#172e59] flex flex-col items-center justify-center p-12 text-center">
-                <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-24 mb-8" onerror="this.style.display='none'" />
-                <h2 class="text-white text-4xl font-black mb-4 uppercase tracking-tighter">Estación de Retransmisión</h2>
-                <p class="text-blue-200/60 mb-10 max-w-lg text-lg">Vincule OBS para iniciar el ciclo automático de 15 minutos.</p>
-                
-                <button onclick="iniciarCaptura()" class="group bg-[#158e45] hover:bg-[#1bbd5c] text-white px-12 py-6 rounded-3xl transition-all hover:scale-105 shadow-2xl flex items-center gap-4">
-                    <i data-lucide="video" class="w-8 h-8"></i>
-                    <span class="text-2xl font-black uppercase tracking-tight">VINCULAR CON OBS</span>
-                </button>
-            </div>
-
-            <!-- Cortinilla Transición -->
             <div id="transitionOverlay" class="absolute inset-0 z-40 bg-[#172e59] hidden flex-col items-center justify-center text-white">
-                <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-32 mb-8 animate-pulse" />
+                <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-32 mb-8 animate-pulse" onerror="this.style.display='none'">
                 <h3 class="text-4xl font-black uppercase tracking-tighter">Espacio Publicitario</h3>
-                <p class="text-blue-200 mt-2 font-bold uppercase tracking-widest">Presentando promociones COOSAJO</p>
             </div>
         </div>
     </main>
 
-    <footer class="relative z-50 h-[80px] bg-[#172e59] text-white flex items-center overflow-hidden border-t-4 border-white/10">
+    <footer class="relative z-50 h-[80px] bg-[#172e59] text-white flex items-center overflow-hidden">
         <div class="absolute left-0 top-0 bottom-0 z-20 bg-[#158e45] flex items-center px-8 shadow-2xl">
-            <i data-lucide="megaphone" class="w-6 h-6 mr-3"></i>
             <span class="font-black text-xl uppercase tracking-tighter italic">Noticias COOSAJO</span>
         </div>
         <div class="whitespace-nowrap animate-marquee flex items-center gap-20 text-xl font-bold ml-[300px]">
-            <span>✨ ¡Ahorrar tiene premio! Por cada depósito de <strong class="text-yellow-400 text-3xl mx-2 font-black italic">Q50</strong> en tu Magicuenta, llévate tus estampitas.</span>
-            <span class="text-[#158e45] text-4xl">•</span>
-            <span>🏠 Tu esfuerzo diario es el futuro de los que más quieres. COOSAJO es tu respaldo.</span>
-            <span class="text-[#158e45] text-4xl">•</span>
-            <span>🚀 Impulsa tu negocio con un crédito diseñado para que sigas creciendo al ritmo que quieres.</span>
+            <span>✨ ¡Ahorrar tiene premio! Por cada depósito de <strong class="text-yellow-400 text-3xl font-black italic">Q50</strong> en tu Magicuenta.</span>
+            <span>🏠 Tu esfuerzo diario es el futuro de los que más quieres.</span>
         </div>
     </footer>
 
     <script>
         lucide.createIcons();
-
         const liveVideo = document.getElementById('liveVideo');
         const adPlayer = document.getElementById('adPlayer');
-        const countdownEl = document.getElementById('countdown');
         const sidebar = document.getElementById('sidebar');
-        const adsList = ['videos/publicidad_1.mp4', 'videos/publicidad_2.mp4', 'videos/publicidad_3.mp4'];
-        let timerValue = 15 * 60; 
-        let currentAdIdx = 0;
+        const statusOverlay = document.getElementById('connectionStatus');
+        let timerValue = 15 * 60;
+        let peer;
 
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clockTime').textContent = now.toLocaleTimeString('es-GT', { hour: '2-digit', minute: '2-digit', hour12: true });
-            document.getElementById('clockDate').textContent = now.toLocaleDateString('es-GT', { weekday: 'long', day: 'numeric', month: 'long' });
-        }
-        setInterval(updateClock, 1000); updateClock();
-
-        async function fetchWeather() {
-            try {
-                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=14.5667&longitude=-89.35&current=temperature_2m,weather_code');
-                const data = await res.json();
-                const temp = Math.round(data.current.temperature_2m);
-                const code = data.current.weather_code;
-                document.getElementById('weatherTemp').textContent = `${temp}°C`;
-                let icon = 'cloud-sun';
-                if(code === 0) icon = 'sun';
-                else if(code >= 51 && code <= 67) icon = 'cloud-rain';
-                document.getElementById('weatherIconContainer').innerHTML = `<i data-lucide="${icon}" class="w-8 h-8"></i>`;
-                lucide.createIcons();
-            } catch (e) { 
-                document.getElementById('weatherTemp').textContent = '24°C';
-            }
-        }
-        fetchWeather(); setInterval(fetchWeather, 900000);
-
-        function initBanners() {
-            const container = document.getElementById('bannersContainer');
-            const progContainer = document.getElementById('progressContainer');
-            for(let i=0; i<8; i++) {
-                const div = document.createElement('div');
-                div.id = `banner-${i}`;
-                div.className = `absolute inset-0 transition-opacity duration-1000 ${i===0 ? 'opacity-100' : 'opacity-0'}`;
-                div.innerHTML = `<img src="Lateral ${i+1}.png" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/431x800/172e59/ffffff?text=Banner+Lateral+${i+1}'">`;
-                container.appendChild(div);
-
-                const dot = document.createElement('div');
-                dot.className = "h-1.5 flex-1 bg-white/20 rounded-full overflow-hidden";
-                dot.innerHTML = `<div id="dot-${i}" class="h-full bg-[#158e45] w-full ${i===0 ? 'animate-progress' : 'opacity-0'}"></div>`;
-                progContainer.appendChild(dot);
-            }
-
-            let currentBanner = 0;
-            setInterval(() => {
-                currentBanner = (currentBanner + 1) % 8;
-                for(let i=0; i<8; i++) {
-                    document.getElementById(`banner-${i}`).style.opacity = i === currentBanner ? '1' : '0';
-                    const d = document.getElementById(`dot-${i}`);
-                    d.className = `h-full bg-[#158e45] w-full ${i === currentBanner ? 'animate-progress' : (i < currentBanner ? 'opacity-100' : 'opacity-0')}`;
-                }
-            }, 8000);
-        }
-        initBanners();
-
-        async function iniciarCaptura() {
-            try {
-                const stream = await navigator.mediaDevices.getDisplayMedia({ 
-                    video: { cursor: "never", frameRate: 60 }, 
-                    audio: { echoCancellation: false, noiseSuppression: false } 
+        function connectToMaster() {
+            peer = new Peer();
+            peer.on('open', () => {
+                const call = peer.call('COOSAJO-MASTER-MAGIC', new MediaStream());
+                call.on('stream', (stream) => {
+                    liveVideo.srcObject = stream;
+                    statusOverlay.classList.add('hidden');
+                    document.getElementById('streamUI').classList.remove('opacity-0');
+                    sidebar.classList.add('hidden-sidebar');
+                    startCycle();
                 });
-                liveVideo.srcObject = stream;
-                document.getElementById('setupPanel').classList.add('hidden');
-                document.getElementById('streamUI').classList.remove('opacity-0');
                 
-                // Al iniciar el partido, ocultamos laterales para pantalla completa
-                sidebar.classList.add('hidden-sidebar');
-                
-                startCycle();
-            } catch (err) { console.error("Error capturando OBS:", err); }
+                call.on('error', () => setTimeout(connectToMaster, 5000));
+            });
+            peer.on('error', () => setTimeout(connectToMaster, 5000));
         }
+        window.onload = connectToMaster;
 
         function startCycle() {
             const timerId = setInterval(() => {
                 timerValue--;
                 const m = Math.floor(timerValue / 60);
                 const s = timerValue % 60;
-                countdownEl.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-
+                document.getElementById('countdown').textContent = `${m}:${s.toString().padStart(2, '0')}`;
                 if (timerValue <= 0) {
                     clearInterval(timerId);
                     lanzarAds();
@@ -278,45 +147,55 @@
         }
 
         function lanzarAds() {
-            // Mostramos laterales al iniciar publicidad
             sidebar.classList.remove('hidden-sidebar');
-            
             document.getElementById('transitionOverlay').classList.remove('hidden');
-            liveVideo.muted = true; 
-            currentAdIdx = 0;
-            playNextAd();
-        }
-
-        function playNextAd() {
-            if (currentAdIdx < adsList.length) {
-                adPlayer.classList.remove('hidden');
-                adPlayer.src = adsList[currentAdIdx];
-                adPlayer.play().then(() => {
-                    document.getElementById('transitionOverlay').classList.add('hidden');
-                }).catch(e => {
-                    currentAdIdx++;
-                    playNextAd();
-                });
-
-                adPlayer.onended = () => {
-                    currentAdIdx++;
-                    playNextAd();
-                };
-            } else {
-                finishAds();
-            }
+            liveVideo.muted = true;
+            let adIndex = 1;
+            const playAd = () => {
+                if(adIndex <= 3) {
+                    adPlayer.classList.remove('hidden');
+                    adPlayer.src = `videos/publicidad_${adIndex}.mp4`;
+                    adPlayer.play().then(() => document.getElementById('transitionOverlay').classList.add('hidden')).catch(next);
+                    adPlayer.onended = next;
+                } else { finishAds(); }
+            };
+            const next = () => { adIndex++; playAd(); };
+            playAd();
         }
 
         function finishAds() {
             adPlayer.classList.add('hidden');
-            
-            // Ocultamos laterales al volver al partido
             sidebar.classList.add('hidden-sidebar');
-            
-            liveVideo.muted = false; 
+            liveVideo.muted = false;
             timerValue = 15 * 60;
             startCycle();
         }
+
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clockTime').textContent = now.toLocaleTimeString('es-GT', {hour:'2-digit', minute:'2-digit'});
+            document.getElementById('clockDate').textContent = now.toLocaleDateString('es-GT', {weekday:'long', day:'numeric', month:'long'});
+        }, 1000);
+
+        function initBanners() {
+            const container = document.getElementById('bannersContainer');
+            for(let i=1; i<=8; i++) {
+                const img = document.createElement('img');
+                img.src = `Lateral ${i}.png`;
+                img.className = "absolute inset-0 w-full h-full object-cover opacity-0 transition-opacity duration-1000";
+                img.id = `b-${i}`;
+                img.onerror = () => img.src = `https://placehold.co/431x800/172e59/ffffff?text=Banner+${i}`;
+                container.appendChild(img);
+            }
+            let cur = 1;
+            setInterval(() => {
+                document.getElementById(`b-${cur}`).style.opacity = 0;
+                cur = cur % 8 + 1;
+                document.getElementById(`b-${cur}`).style.opacity = 1;
+            }, 8000);
+            document.getElementById('b-1').style.opacity = 1;
+        }
+        initBanners();
     </script>
 </body>
 </html>
