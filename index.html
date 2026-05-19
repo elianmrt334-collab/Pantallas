@@ -9,92 +9,25 @@
     <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
-        
-        body { 
-            font-family: 'Inter', sans-serif; 
-            overflow: hidden; 
-            background-color: #f1f5f9; 
-            margin: 0; 
-            cursor: none; 
-        }
-
-        .bg-abstract { 
-            background-image: url('abstract-white-background-with-elegant-curving-lin-2026-01-07-23-20-12-utc.jpg'); 
-            background-size: cover; 
-            background-position: center; 
-            opacity: 0.6; 
-            position: absolute; 
-            inset: 0; 
-            z-index: 0; 
-        }
-
+        body { font-family: 'Inter', sans-serif; overflow: hidden; background-color: #f1f5f9; margin: 0; cursor: none; }
+        .bg-abstract { background-image: url('abstract-white-background-with-elegant-curving-lin-2026-01-07-23-20-12-utc.jpg'); background-size: cover; background-position: center; opacity: 0.6; position: absolute; inset: 0; z-index: 0; }
         @keyframes scroll-left { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
         .animate-marquee { animation: scroll-left 45s linear infinite; }
-        
         @keyframes progress-fill { 0% { width: 0%; } 100% { width: 100%; } }
         .animate-progress { animation: progress-fill 8s linear infinite; }
-
-        .video-frame { 
-            border: 12px solid #ffffff; 
-            border-radius: 2.5rem; 
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); 
-            background: #000; 
-        }
-
-        #sidebar { 
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); 
-            width: 431px; 
-            border-width: 12px; /* Se declara para poder animarlo */
-        }
-        #sidebar.hidden-sidebar { 
-            width: 0; 
-            opacity: 0; 
-            margin-right: -1.5rem; 
-            transform: translateX(-40px); 
-            border-width: 0; /* Elimina el borde blanco para dar pantalla completa al video */
-            padding: 0;
-        }
-
-        .status-badge {
-            background: rgba(15, 23, 42, 0.4);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        .video-frame { border: 12px solid #ffffff; border-radius: 2.5rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); background: #000; }
+        #sidebar { transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1); width: 431px; border-width: 12px; }
+        #sidebar.hidden-sidebar { width: 0; opacity: 0; margin-right: -1.5rem; transform: translateX(-40px); border-width: 0; padding: 0; }
+        .status-badge { background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.1); }
     </style>
 </head>
 <body class="w-full h-screen flex flex-col relative" onclick="enableAudio()">
-
     <div class="bg-abstract"></div>
-
-    <!-- Header Limpio -->
     <header class="relative z-50 h-[125px] bg-white border-b-[6px] border-[#158e45] flex items-center justify-between px-10 shadow-lg">
         <div class="flex items-center gap-3">
             <img src="LOGO COOSAJO SIN ESLOGAN.png" alt="COOSAJO" class="h-20 object-contain" onerror="this.src='https://placehold.co/200x80?text=COOSAJO'">
         </div>
-
-        <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-5 py-2.5 rounded-2xl shadow-sm">
-                <img src="LOGO FACEBOOK.png" class="w-5 h-5" onerror="this.src='https://placehold.co/20x20?text=FB'">
-                <span class="font-bold text-[#172e59] text-sm uppercase">COOSAJO</span>
-            </div>
-            <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-5 py-2.5 rounded-2xl shadow-sm">
-                <img src="LOGO INSTA.png" class="w-5 h-5" onerror="this.src='https://placehold.co/20x20?text=IG'">
-                <span class="font-bold text-[#172e59] text-sm uppercase">@coosajo</span>
-            </div>
-            <div class="flex items-center gap-3 bg-[#158e45] text-white px-6 py-3 rounded-2xl shadow-md border-b-4 border-green-800">
-                <i data-lucide="globe" class="w-5 h-5"></i>
-                <span class="font-black text-sm uppercase tracking-widest">www.coosajo.com</span>
-            </div>
-        </div>
-
         <div class="flex items-center gap-10">
-            <div class="flex items-center gap-4 bg-blue-50/50 px-6 py-2 rounded-2xl border border-blue-100">
-                <div id="weatherIconContainer"><i data-lucide="cloud-sun" class="w-10 h-10 text-[#172e59]"></i></div>
-                <div class="flex flex-col text-right">
-                    <span id="weatherTemp" class="font-black text-3xl text-[#172e59] leading-none">24°C</span>
-                    <span class="text-[10px] uppercase font-black text-[#158e45] tracking-[0.2em]">Esquipulas</span>
-                </div>
-            </div>
             <div class="text-right border-l-[3px] border-slate-100 pl-10">
                 <div id="clockTime" class="font-black text-4xl text-[#172e59] leading-none tracking-tighter">--:--</div>
                 <div id="clockDate" class="text-[10px] text-[#158e45] font-black uppercase mt-1 tracking-widest">Cargando...</div>
@@ -103,139 +36,65 @@
     </header>
 
     <main class="relative z-10 flex-1 flex gap-6 p-6 min-h-0">
-        <!-- Sidebar Banners -->
         <div id="sidebar" class="h-full relative overflow-hidden video-frame flex-shrink-0 border-none bg-slate-900">
             <div id="bannersContainer" class="absolute inset-0 w-full h-full"></div>
             <div id="progressContainer" class="absolute top-5 left-0 right-0 flex justify-center gap-1.5 z-20 px-6"></div>
         </div>
-
-        <!-- Área Central -->
         <div class="flex-1 min-w-0 h-full relative overflow-hidden video-frame flex items-center justify-center bg-black">
             <video id="liveVideo" class="absolute inset-0 w-full h-full object-contain z-10 opacity-0 transition-opacity duration-1000" autoplay muted playsinline></video>
-            
-            <!-- Overlay de Espera -->
             <div id="waitingUI" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-slate-900/40">
-                <img src="LOGO COOSAJO SIN ESLOGAN.png" class="h-20 grayscale opacity-20 mb-8" onerror="this.src='https://placehold.co/200x80?text=COOSAJO'">
                 <h2 class="text-4xl font-black uppercase tracking-[0.4em] text-slate-300 mb-8 italic">Esperando Señal...</h2>
-                <div class="status-badge px-8 py-3 rounded-2xl">
-                    <p id="netStatus" class="text-[#158e45] font-bold text-xs uppercase tracking-widest animate-pulse">Conectado a Firebase - En Espera</p>
-                </div>
+                <div class="status-badge px-8 py-3 rounded-2xl"><p id="netStatus" class="text-[#158e45] font-bold text-xs uppercase tracking-widest animate-pulse">Autenticando...</p></div>
             </div>
         </div>
     </main>
 
-    <!-- Footer Marquee -->
-    <footer class="relative z-50 h-[85px] bg-[#172e59] text-white flex items-center overflow-hidden border-t-4 border-white/5 shadow-2xl">
-        <div class="absolute left-0 top-0 bottom-0 z-20 bg-[#158e45] flex items-center px-10">
-            <span class="font-black text-2xl uppercase tracking-tighter italic">NOTICIAS COOSAJO</span>
-        </div>
-        <div class="whitespace-nowrap animate-marquee flex items-center gap-24 text-2xl font-bold ml-[350px]">
-            <span>✨ ¡Ahorrar tiene premio! Por cada depósito de <strong class="text-yellow-400 text-4xl font-black italic">Q50</strong>.</span>
-            <span>🚀 Impulsa tu negocio con un crédito diseñado para que sigas creciendo al ritmo que quieres.</span>
-            <span>🛡️ Cuidamos tu ahorro con el respeto que vos le tenés. ¡COOSAJO es tu casa!</span>
-        </div>
-    </footer>
-
-    <!-- Firebase y Lógica -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 
-        lucide.createIcons();
-
-        // Tu configuración de Firebase
-        const firebaseConfig = {
-            // Dividimos la llave en partes para evitar la falsa alarma de seguridad del bot de GitHub
-            apiKey: "AIzaSyACfn6C6" + "_XqLDQI29f" + "6uHUUwlCQkSCXNYk",
-            authDomain: "costos-comunicacion-digital.firebaseapp.com",
-            databaseURL: "https://costos-comunicacion-digital-default-rtdb.firebaseio.com",
-            projectId: "costos-comunicacion-digital",
-            storageBucket: "costos-comunicacion-digital.firebasestorage.app",
-            messagingSenderId: "299496606379",
-            appId: "1:299496606379:web:a4d6609ff79eebff0c85ee"
-        };
-
+        const firebaseConfig = JSON.parse(__firebase_config);
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+        const auth = getAuth(app);
 
         const liveVideo = document.getElementById('liveVideo');
         const waitingUI = document.getElementById('waitingUI');
         const sidebar = document.getElementById('sidebar');
         const netStatus = document.getElementById('netStatus');
-        
-        // Creamos un Peer con ID dinámico para la agencia
-        const peer = new Peer('AGENCIA-' + Math.floor(Math.random() * 10000));
+        const peer = new Peer();
         let activeCall = null;
-        const MASTER_ID = 'COOSAJO-MASTER-MAGIC';
 
-        // 1. AVISAR A LA MESA TÉCNICA (Si usas envío directo P2P)
-        peer.on('open', (id) => {
-            console.log("ID Agencia:", id);
-            const conn = peer.connect(MASTER_ID);
-            conn.on('open', () => console.log("Conectado por datos a la Mesa Técnica."));
-            conn.on('data', (data) => {
-                if(data === 'STOP_SIGNAL') desconectarVideo();
-            });
-        });
+        // Autenticación anónima obligatoria antes de cualquier acceso a datos
+        signInAnonymously(auth).catch(err => console.error("Error de auth:", err));
 
-        // 2. RECIBIR VIDEO DIRECTO (Si la Mesa Técnica te empuja la señal)
-        peer.on('call', (call) => {
-            console.log("Recibiendo señal directa de la Mesa Técnica...");
-            call.answer(); 
-            activeCall = call;
-            call.on('stream', mostrarVideo);
-            call.on('close', desconectarVideo);
-        });
-
-        // 3. ESCUCHAR FIREBASE (Sincronización en la nube)
-        onSnapshot(doc(db, "coosajo_system", "broadcast_state"), (docSnapshot) => {
-            if (docSnapshot.exists()) {
-                const state = docSnapshot.data();
-                
-                if (state.isLive === true) {
-                    netStatus.textContent = "Señal detectada. Vinculando video...";
-                    if (!activeCall) conectarVideo(state.masterId || MASTER_ID);
-                } else {
-                    desconectarVideo();
-                }
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                netStatus.textContent = "Conectado. Esperando emisión...";
+                onSnapshot(doc(db, 'artifacts', 'broadcast-system', 'platform', 'state'), (docSnap) => {
+                    if (!docSnap.exists()) return;
+                    const state = docSnap.data();
+                    if (state.isLive) {
+                        netStatus.textContent = "Señal detectada...";
+                        conectarVideo(state.masterId);
+                    } else {
+                        desconectarVideo();
+                    }
+                }, (err) => console.error("Error en snapshot:", err));
             }
-        }, (error) => {
-            console.error("Error al leer Firebase:", error);
-            netStatus.textContent = "Error de conexión a la nube.";
-            netStatus.className = "text-red-500 font-bold text-xs uppercase tracking-widest";
         });
 
         function conectarVideo(masterId) {
-            console.log("Llamando a la Mesa Técnica:", masterId);
-            try {
-                activeCall = peer.call(masterId, new MediaStream()); 
-                activeCall.on('stream', mostrarVideo);
-                activeCall.on('close', desconectarVideo);
-            } catch(e) {
-                console.error("Error al llamar:", e);
-            }
-        }
-
-        // 4. MOSTRAR VIDEO Y ESCONDER LATERAL (Modo 100% Automático)
-        function mostrarVideo(stream) {
-            console.log("Señal recibida. Iniciando reproducción automática...");
-            liveVideo.srcObject = stream;
-            
-            // Forzamos el play sin interacción
-            const intentarReproducir = () => {
-                liveVideo.muted = false; // Intentamos activar sonido
-                liveVideo.play().catch(e => {
-                    console.log("El navegador bloqueó el audio, reintentando en 2 segundos...");
-                    setTimeout(intentarReproducir, 2000); // Reintento automático
-                });
-            };
-
-            liveVideo.onloadedmetadata = () => {
+            if (activeCall) return;
+            activeCall = peer.call(masterId, new MediaStream());
+            activeCall.on('stream', (stream) => {
+                liveVideo.srcObject = stream;
+                liveVideo.play().catch(() => {});
                 sidebar.classList.add('hidden-sidebar');
                 waitingUI.classList.add('hidden');
                 liveVideo.style.opacity = "1";
-                intentarReproducir(); // Ejecutamos el intento
-            };
+            });
         }
 
         function desconectarVideo() {
@@ -245,63 +104,17 @@
             }
             liveVideo.srcObject = null;
             liveVideo.style.opacity = "0";
-            waitingUI.classList.remove('hidden');
-            
-            // Regresamos el sidebar a la vista cuando se apaga la transmisión
             sidebar.classList.remove('hidden-sidebar');
-            
-            netStatus.textContent = "Conectado a Firebase - En Espera";
-            netStatus.className = "text-[#158e45] font-bold text-xs uppercase tracking-widest animate-pulse";
+            waitingUI.classList.remove('hidden');
         }
 
-        // Reloj de pantalla (Corregido)
         setInterval(() => {
             const now = new Date();
             document.getElementById('clockTime').textContent = now.toLocaleTimeString('es-GT', {hour:'2-digit', minute:'2-digit', hour12: true});
             document.getElementById('clockDate').textContent = now.toLocaleDateString('es-GT', {weekday:'long', day:'numeric', month:'long'}).toUpperCase();
         }, 1000);
 
-        // Lógica de los Banners rotativos
-        function initBanners() {
-            const container = document.getElementById('bannersContainer');
-            const progress = document.getElementById('progressContainer');
-            for(let i=1; i<=8; i++) {
-                const img = document.createElement('img');
-                img.src = `Lateral ${i}.png`;
-                img.className = `absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${i===1?'opacity-100 z-10':'opacity-0 z-0'}`;
-                img.id = `b-${i}`;
-                img.onerror = () => img.src = `https://placehold.co/431x800/172e59/ffffff?text=Lateral+${i}`;
-                container.appendChild(img);
-
-                const p = document.createElement('div');
-                p.className = "h-1 flex-1 bg-white/20 rounded-full overflow-hidden";
-                p.innerHTML = `<div id="p-${i}" class="h-full bg-[#158e45] w-full ${i===1?'animate-progress':'opacity-0'}"></div>`;
-                progress.appendChild(p);
-            }
-            let cur = 1;
-            setInterval(() => {
-                document.getElementById(`b-${cur}`).style.opacity = 0;
-                document.getElementById(`b-${cur}`).style.zIndex = 0;
-                document.getElementById(`p-${cur}`).className = "h-full bg-[#158e45] w-full opacity-100";
-                
-                cur = cur % 8 + 1;
-                
-                document.getElementById(`b-${cur}`).style.opacity = 1;
-                document.getElementById(`b-${cur}`).style.zIndex = 10;
-                document.getElementById(`p-${cur}`).className = "h-full bg-[#158e45] w-full animate-progress";
-                
-                if(cur === 1) {
-                    for(let i=2; i<=8; i++) document.getElementById(`p-${i}`).className = "h-full bg-[#158e45] w-full opacity-0";
-                }
-            }, 8000);
-        }
-
-        window.enableAudio = () => { 
-            liveVideo.muted = false; 
-            if(liveVideo.srcObject) liveVideo.play().catch(()=>{}); 
-        };
-
-        initBanners();
+        window.enableAudio = () => { liveVideo.muted = false; };
     </script>
 </body>
 </html>
