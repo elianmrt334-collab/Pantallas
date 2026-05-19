@@ -216,18 +216,25 @@
             }
         }
 
-        // 4. MOSTRAR VIDEO Y ESCONDER LATERAL
+        // 4. MOSTRAR VIDEO Y ESCONDER LATERAL (Modo 100% Automático)
         function mostrarVideo(stream) {
-            console.log("Video recibido. Expandiendo a pantalla completa...");
+            console.log("Señal recibida. Iniciando reproducción automática...");
             liveVideo.srcObject = stream;
+            
+            // Forzamos el play sin interacción
+            const intentarReproducir = () => {
+                liveVideo.muted = false; // Intentamos activar sonido
+                liveVideo.play().catch(e => {
+                    console.log("El navegador bloqueó el audio, reintentando en 2 segundos...");
+                    setTimeout(intentarReproducir, 2000); // Reintento automático
+                });
+            };
+
             liveVideo.onloadedmetadata = () => {
-                // Al llegar la señal, ocultamos el sidebar para que el video crezca
                 sidebar.classList.add('hidden-sidebar');
                 waitingUI.classList.add('hidden');
                 liveVideo.style.opacity = "1";
-
-                // El video empieza muteado (por reglas del navegador). Clickea para oír.
-                liveVideo.play().catch(e => console.log("Clickea la pantalla para habilitar sonido"));
+                intentarReproducir(); // Ejecutamos el intento
             };
         }
 
